@@ -1,0 +1,176 @@
+<div class="page-container">
+    <div class="container-adquisidor">
+      <div class="data-usuario">
+        <a class="link-cerrar-sesion" (click)="cerrarSesion()"><fa-icon [icon]="faSignOut"></fa-icon>Cerrar Sesión</a>
+        <h2 >{{razon_social}}</h2>
+        <p>Departamento: {{nombreDepartamento}}</p>
+        <p>Fecha: {{ fechaActual }}</p>
+        <p>{{ usuario.nombre_usuario }}</p>
+        <app-indicator-card [esOrdenesCompra]="true" [misOrdenesCompra]="ordenesDeCompra"></app-indicator-card>
+      </div>
+      <div class="nav-pestana">
+        <h3 class="ordenes-compras" [ngClass]="{'nav-categoria-activa': pestanaActiva === 'ordenesCompras'}" 
+          (click)="navOrdenesCompras();">Ordenes de Compras</h3>
+        <!-- <h3 class="crear-orden-compra" [ngClass]="{'nav-categoria-activa': pestanaActiva === 'crearOrdenCompra'}" 
+          (click)="navCrearOrdenCompra();">Crear Orden de Compra</h3> -->
+      </div>
+  
+      <div class="crear-orden-container" *ngIf="pestanaActiva === 'crearOrdenCompra'">
+        <div class="seleccionar-productos-container" *ngIf="listaPedidos">
+          <div class="filtro-categoria">
+            Categoría:
+            <select [(ngModel)]="opcionSeleccionada">
+                <option value="TODOS">TODOS</option>
+                <option *ngFor="let opcion of opcionesEstado" [value]="opcion">{{ opcion }}</option>
+            </select>
+            <button class="btn-filtrar-pedido" (click)="filtrarPedidos()">Filtrar</button>
+          </div>
+          <div class="filtros-fechas-container">
+              <!-- <label for="fecha-desde">Desde:</label>
+              <input type="date" id="fecha-desde" [(ngModel)]="fechaDesde">
+            
+              <label class="fecha-hasta" for="fecha-hasta">Hasta:</label>
+              <input type="date" id="fecha-hasta" [(ngModel)]="fechaHasta"> -->
+              <!-- <button class="btn-filtrar-pedido" (click)="filtrarPedidos()">Filtrar</button> -->
+              <!-- <div>
+                <button class="btn-filtrar-pedido" (click)="filtrarPedidos()">Filtrar</button>
+            </div> -->
+          </div>
+          
+          <h3>Pedidos Disponibles</h3>
+          <div class="fila-cabecera">
+            <div class="celda celda-cabecera celda-id">ID Pedido</div>
+            <div class="celda celda-cabecera celda-categoria">Categoría</div>
+            <div class="celda celda-cabecera celda-producto">Producto</div>
+            <div class="celda celda-cabecera celda-cantidad">Cantidad</div>
+          </div>
+          <div *ngFor="let pedido of misPedidosFiltrados" class="producto-item fila">
+            <div class="producto-info">
+              <div class="celda celda-id">{{ pedido.id_orden_pedido_cabecera_fk }}</div>
+              <div class="celda celda-categoria">{{ pedido.producto?.categoria?.nombre_categoria }}</div>
+              <div class="celda celda-producto">{{ pedido.producto?.nombre_producto }}</div>
+              <div class="celda celda-cantidad">{{ pedido.cantidad_solicitada }}</div>
+              <div class="producto-control control">
+                <ng-container *ngIf="mostrarBtnAgregar(pedido); else boton">
+                  <p>Agregado</p>
+                </ng-container>
+                <ng-template #boton>
+                  <button (click)="agregarProductoAOrden(pedido)" class="cantidad-button">Agregar</button>
+                </ng-template>
+                <!-- <button (click)="agregarProductoAOrden(pedido)" class="cantidad-button">Añadir</button> -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="orden-compra-container">
+          <h3>Orden de Compra</h3>
+          <div class="opciones-proveedor">
+            Proveedor:
+            <select [(ngModel)]="opcionSeleccionadaProveedor" name="proveedor" required>
+                <option value="Seleccione un proveedor">Seleccione un proveedor</option>
+                <option *ngFor="let opcionProveedor of opcionesProveedor" [value]="opcionProveedor">{{ opcionProveedor }}</option>
+            </select>
+          </div>
+          <div *ngIf="ordenCompraActual">
+            <div *ngFor="let detalle of ordenCompraActual" class="detalle-orden-compra">
+              <p>{{ detalle.pedido.producto?.nombre_producto }}</p>
+              <div class="detalle-nombre-producto">
+                <p>Cantidad: {{ detalle.pedido.cantidad_solicitada }}</p>
+                <p>Precio Unidad: $</p><input type="number" class="cantidad-input" [ngModel]="detalle.precioUnidad"
+                  [value]="detalle.precioUnidad" min="0" (input)="actualizarPrecio(detalle, $event)" required>
+                <div class="orden-control">
+                  <button (click)="eliminarDetalle(detalle.pedido)" class="btn-eliminar-detalle">Eliminar</button>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="sumaTotal>0" class="total-container">
+              <p>Neto: $<span class="line"></span>{{neto}}</p>
+              <p>19% IVA: $<span>{{iva}}</span></p>
+              <p>Total: $<span>{{sumaTotal}}</span></p>
+            </div>
+            <button [disabled]="ordenCompraActual.length === 0 || sumaTotal===0 || !ordenCompraActual.every(precioUnidadValido) || opcionSeleccionadaProveedor === 'Seleccione un proveedor'" (click)="guardarOrdenCompra()">Generar Orden de Compra</button>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="pestanaActiva === 'ordenesCompras'" class="orden-compra-item">
+        <!-- <h3>Ordenes de Compras</h3> -->
+        <div class="filtros-container">
+          <div class="filtro-estado">
+              Estado:
+              <select [(ngModel)]="opcionEstadoSeleccionada">
+                  <option value="TODOS">TODOS</option>
+                  <option *ngFor="let opcion of opcionesEstadoCompra" [value]="opcion">{{ opcion }}</option>
+              </select>
+          </div>
+          <div class="filtros-fechas-container">
+              <label for="fecha-desde">Desde:</label>
+              <input type="date" id="fecha-desde" [(ngModel)]="fechaDesde">
+            
+              <label for="fecha-hasta">Hasta:</label>
+              <input type="date" id="fecha-hasta" [(ngModel)]="fechaHasta">
+          </div>
+          <div class="btn-filtrar-compra">
+              <button class="btn-filtrar-pedido" (click)="filtrarEstadosCompra()">Filtrar</button>
+          </div>
+        </div>
+        <div *ngIf="ordenesDeCompra.length > 0; else noOrdenesCompras">
+          <div class="orden-compra" *ngFor="let ordenCompra of ordenesDeCompra; let i = index">
+            <div class="cabecera-orden-compra" (click)="ordenesDeCompra[i].expanded = !ordenesDeCompra[i].expanded">
+              <div class="pedido-card-info">
+                <p>ID: {{ ordenCompra.id_orden_compra_cabecera }}</p>
+                <p>Proveedor: {{ ordenCompra.rut_proveedor }}</p>
+                <p>Total Compra: {{ ordenCompra.total_compra }}</p>
+                <p>Fecha: {{ ordenCompra.fecha_emision }}</p>
+                <p>Estado: <span [pTooltip]="tooltipContent">{{ obtenerToolTip(ordenCompra.estado_seguimiento) }}</span></p>
+                <ng-template #tooltipContent>
+                  <div class="toolTip">
+                      <span>
+                          {{ordenCompra.estado_seguimiento}}
+                      </span>
+                  </div>
+                </ng-template>
+              </div>
+              <div class="pedido-card-btn-jefatura">
+                <button *ngIf="ordenCompra.estado_seguimiento === 'PENRC' && tarjetaRevisar !== ordenCompra.id_orden_compra_cabecera" 
+                  class="btn-revisar btn-azul" (click)="revisarCompra($event, ordenCompra)"
+                    >Revisar</button>
+                <button *ngIf="ordenCompra.estado_seguimiento === 'REVGC' " class="btn-aprobar btn-verde"
+                  (click)="btnAprobarCompra($event, ordenCompra)"
+                    >Aprobar</button>
+                <button *ngIf="ordenCompra.estado_seguimiento === 'REVGC' " class="btn-rechazar btn-rojo"
+                    (click)="btnRechazarCompra($event, ordenCompra)"
+                    >Rechazar</button>
+                <button *ngIf="ordenCompra.estado_seguimiento === 'REVGC' " class="btn-cancelar btn-azul"
+                    (click)="anularOrdenCompra($event, ordenCompra)"
+                    >Anular</button>
+                <button *ngIf="ordenCompra.estado_seguimiento === 'REVGC' " class="btn-cancelar btn-gris"
+                  (click)="cancelarRevision($event, ordenCompra)"
+                    >Cancelar</button>
+              </div>
+            </div>
+            <div class="detalle-orden-compra" *ngIf="ordenesDeCompra[i].expanded">
+              <div class="detalle-orden-compra-item" *ngFor="let detalle of ordenCompra.detalles">
+                <div class="detalle-compra-vista">
+                  <p>Producto: {{ detalle.producto?.nombre_producto }}</p>
+                  <p>Cantidad Solicitada: {{ detalle.precio_total_item/detalle.precio_unitario }}</p>
+                  <p>Precio Unitario: {{ detalle.precio_unitario }}</p>
+                  <p>Precio Total: {{ detalle.precio_total_item }}</p>
+                  <p>Cantidad Recepcionada: {{ detalle.cantidad_recepcionada }}</p>
+                </div>
+              </div>
+              <div>
+                <p>Observaciones:</p>
+                <!-- <textarea class="text-area" *ngIf="ordenCompra.estado_seguimiento === 'REVGC' " [(ngModel)]="ordenCompra.observaciones_gerencia"></textarea> -->
+                <textarea class="text-area" [disabled]="ordenCompra.estado_seguimiento !== 'REVGC' "
+                 [(ngModel)]="ordenCompra.observaciones_gerencia"></textarea>
+              </div>
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+    <ng-template #noOrdenesCompras>
+      <h2 class="msg-noOrdenesCompras">No existen órdenes de compra</h2>
+    </ng-template>
+</div>
+<app-pantalla-carga *ngIf="mostrarCarga"></app-pantalla-carga>

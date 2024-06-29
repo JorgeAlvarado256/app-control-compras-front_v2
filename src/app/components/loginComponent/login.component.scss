@@ -1,0 +1,76 @@
+/* Estilo de fondo para la sección de administración y login */
+.admin-background {
+  background-image: url('../../../img/3442581.jpg'); /* Ruta de tu imagen de fondo */
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh; /* Altura mínima para cubrir toda la pantalla */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Estilo para el contenedor del formulario de inicio de sesión */
+.login-container {
+  max-width: 400px;
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.login-label {
+  font-size: 16px;
+  color: #666;
+}
+
+.login-input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+.login-error {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Estilo para el contenedor de la pantalla de carga */
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente */
+  z-index: 1000; /* Asegura que esté encima de todo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}

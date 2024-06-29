@@ -1,0 +1,620 @@
+.page-container {
+  background-color: #a19d9d;
+  padding: 20px 0 600px;
+}
+
+.container-adquisidor {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 50px;
+  background-color: #f9f9f9;
+}
+
+.content-wrapper {
+  background: url('../../../img/wallpaperflare.com_wallpaper.jpg') no-repeat center center fixed; /* Ajusta la ruta según tu estructura de proyecto */
+  background-size: 50% auto; /* Asegura que la imagen cubra todo el fondo */
+  padding: 20px;
+  min-height: 100vh;
+  color: #000000;
+  overflow: hidden; /* Oculta el desbordamiento para un efecto limpio */
+}
+
+.data-usuario {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.data-usuario h2 {
+  color: #333;
+}
+
+.data-usuario p {
+  color: #555;
+}
+
+.data-usuario .link-cerrar-sesion {
+  color: #613ce7;
+  text-decoration: none;
+  margin-top: 15px;
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+
+.data-usuario .link-cerrar-sesion:hover {
+  background: #f0f0f0;
+}
+
+.nav-pestana {
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-item {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.nav-categoria-activa {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.crear-orden-container {
+  display: flex;
+  flex-direction: row;
+  background-color: #eee;
+  padding-left: 10px;
+  border-radius: 0 0 8px 8px;
+  margin-bottom: 20px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.seleccionar-productos-container,
+.orden-compra-container {
+  padding: 20px;
+}
+
+.seleccionar-productos-container {
+  width: 55%;
+  border-right: 1px solid #ddd;
+}
+
+.producto-item .producto-info {
+  display: flex;
+  flex-direction: row;
+}
+
+.filtro-categoria {
+  margin-bottom: 5px;
+}
+
+.btn-filtrar-pedido {
+  margin-left: 20px;
+}
+
+.fecha-hasta {
+  margin-left: 10px;
+}
+
+.orden-compra-container {
+  width: 45%;
+}
+
+.opciones-proveedor {
+  margin-bottom: 10px;
+}
+
+.detalle-orden-compra {
+  display: flex;
+  flex-direction: column;
+}
+
+.detalle-nombre-producto {
+  display: flex;
+  flex-direction: row;
+}
+
+.detalle-nombre-producto p {
+  margin-right: 15px;
+  margin-top: 2px !important;
+}
+
+.detalle-nombre-producto input {
+  max-width: 100px;
+  max-height: 15px;
+  justify-content: center;
+}
+
+.detalle-nombre-producto button {
+  margin-left: 5px;
+}
+
+.msg-noOrdenesCompras {
+  text-align: center;
+  font-size: 1.5em;
+  color: #333;
+  margin-top: 50px;
+  padding-top: 30px;
+}
+
+.crear-orden-container {
+  padding: 20px;
+  background-color: #f4f6f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.filtro-categoria {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tabla-pedidos {
+  margin-top: 20px;
+}
+
+.fila-cabecera {
+  display: flex;
+  font-weight: bold;
+}
+
+.producto-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.celda {
+  flex: 1;
+  padding: 5px 10px;
+}
+
+.orden-compra-container {
+  margin-top: 30px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.opciones-proveedor {
+  margin-bottom: 20px;
+}
+
+.detalle-orden-compra {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.detalle-nombre-producto {
+  flex: 1;
+}
+
+.total-container {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.btn-filtrar-pedido, .btn-eliminar-detalle, .cantidad-button {
+  margin-top: 10px;
+}
+
+.btn-primary:disabled {
+  background-color: #ccc;
+  border-color: #ccc;
+}
+
+
+.crear-orden-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.seleccionar-productos-container {
+    margin-top: 20px;
+}
+
+.filtro-categoria {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.filtro-categoria label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.filtro-categoria select {
+    margin-right: 10px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.btn-filtrar-pedido {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pedidos-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pedidos-disponibles, .solicitud-cotizacion-container {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.pedidos-disponibles h3, .solicitud-cotizacion-container h3 {
+    margin-bottom: 20px;
+}
+
+.fila-cabecera {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.celda {
+    padding: 10px;
+}
+
+.producto-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.producto-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.celda-id, .celda-categoria, .celda-producto, .celda-cantidad {
+    flex: 1;
+    text-align: center;
+}
+
+.cantidad-button {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.solicitud-cotizacion-container {
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.detalle-solicitud-cotizacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.detalle-nombre-producto {
+    display: flex;
+    align-items: center;
+}
+
+.solicitud-control {
+    margin-left: 20px;
+}
+
+.btn-eliminar-detalle {
+    padding: 5px 10px;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.crear-orden-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.seleccionar-productos-container {
+  margin-top: 20px;
+}
+
+.filtro-categoria {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filtro-categoria label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.filtro-categoria select {
+  margin-right: 10px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.btn-filtrar-pedido {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pedidos-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pedidos-disponibles, .solicitud-cotizacion-container {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.pedidos-disponibles h3, .solicitud-cotizacion-container h3 {
+  margin-bottom: 20px;
+}
+
+.fila-cabecera {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.celda {
+  padding: 10px;
+}
+
+.producto-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.producto-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.celda-id, .celda-categoria, .celda-producto, .celda-cantidad {
+  flex: 1;
+  text-align: center;
+}
+
+.cantidad-button {
+  padding: 5px 10px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.solicitud-cotizacion-container {
+  padding: 20px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.detalle-solicitud-cotizacion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.detalle-nombre-producto {
+  display: flex;
+  align-items: center;
+}
+
+.solicitud-control {
+  margin-left: 20px;
+}
+
+.btn-eliminar-detalle {
+  padding: 5px 10px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.crear-orden-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.seleccionar-productos-container {
+  margin-top: 20px;
+}
+
+.filtro-categoria {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filtro-categoria label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.filtro-categoria select {
+  margin-right: 10px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.btn-filtrar-pedido {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pedidos-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pedidos-disponibles, .solicitud-cotizacion-container {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.pedidos-disponibles h3, .solicitud-cotizacion-container h3 {
+  margin-bottom: 20px;
+}
+
+.fila-cabecera {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.celda {
+  padding: 10px;
+}
+
+.producto-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.producto-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.celda-id, .celda-categoria, .celda-producto, .celda-cantidad {
+  flex: 1;
+  text-align: center;
+}
+
+.cantidad-button {
+  padding: 5px 10px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.solicitud-cotizacion-container {
+  padding: 20px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.detalle-solicitud-cotizacion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.detalle-nombre-producto {
+  display: flex;
+  align-items: center;
+}
+
+.solicitud-control {
+  margin-left: 20px;
+}
+
+.btn-eliminar-detalle {
+  padding: 5px 10px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.mensaje-error {
+  color: red;
+  font-size: 18px;
+  margin-top: 10px;
+}
