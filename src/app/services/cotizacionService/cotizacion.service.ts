@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Proveedor } from 'src/app/interfaces/proveedorInterface';
 import { Cotizacion } from 'src/app/interfaces/cotizacionInterface';
@@ -15,11 +15,11 @@ export class CotizacionService {
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
-
   agregarCotizacion(cotizacion: Cotizacion): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/enviarSolicitudCotizacion`, cotizacion)
       .pipe(catchError(this.handleError));
   }
+
 
   obtenerCotizaciones(): Observable<Cotizacion[]> {
     return this.http.get<Cotizacion[]>(`${this.apiUrl}/obtenerCotizaciones`)
@@ -92,5 +92,43 @@ export class CotizacionService {
     }
     console.error(errorMessage);
     return throwError(errorMessage);
+  }
+
+  
+  enviarSolicitudCotizacion(solicitud: any): Observable<any> {
+    const url = `${this.apiUrl}/solicitudCotizacion`;
+    return this.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError('Token de autenticación no disponible');
+        }
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return this.http.post(url, solicitud, { headers }).pipe(
+          catchError(this.handleError)
+        );
+      }),
+      catchError(error => {
+        console.error('Error al obtener el token:', error);
+        return throwError('Error al obtener el token');
+      })
+    );
+  }
+
+ private getToken(): Observable<string | null> {
+    const token = this.authService.getToken();
+    return of(token);
+  }
+
+  async descargarCotizacion(detalle: any) {
+    try {
+      const response: any = await this.http.get(`/descargar-adjuntos/${detalle.rut_usuario}`).toPromise();
+      if (response && response.archivo_pdf) {
+        window.open(response.archivo_pdf, '_blank'); // Abre el PDF en una nueva pestaña
+      } else {
+        console.error('Error al descargar el archivo PDF');
+      }
+    } catch (error) {
+      console.error('Error al descargar el archivo PDF:', error);
+    }
   }
 }

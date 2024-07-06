@@ -13,4 +13,5 @@ export interface DetalleCotizacion {
   orden_compra_detalle_fk: number;
   id_proveedores: number;
   producto?: Producto; // Si la propiedad producto es opcional, puedes usar '?'
+  archivo_pdf?: string;
 }

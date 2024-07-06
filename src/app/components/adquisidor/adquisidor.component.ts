@@ -112,6 +112,7 @@ export class AdquisidorComponent implements OnInit {
   solicitudSeleccionada: any;
   detallesSolicitudCotizacion: any[] = [];
   errorProductoAgregado = false;
+  detallesCotizacion: DetalleCotizacion[] = []; // Asumiendo que tienes una propiedad así definida
 
   constructor(
     public empresaService: EmpresaService,
@@ -214,6 +215,7 @@ export class AdquisidorComponent implements OnInit {
     this.obtenerUsuarioAutenticado();
     this.listarProductosAprobadosParaCotizacion();
     this.cdr.detectChanges();
+    this.mostrarOrdenesDeCompra = true;
 
     
 
@@ -428,7 +430,9 @@ export class AdquisidorComponent implements OnInit {
   }
   navOrdenesCompras() {
     this.pestanaActiva = 'ordenesCompras';
-  }
+    this.mostrarOrdenesDeCompra = false;
+}
+
 
   navCrearOrdenCompra() {
     console.log(this.listaPedidos);
@@ -872,9 +876,13 @@ guardarSolicitudDeCotizacion() {
       console.error('Error al guardar la solicitud de cotización:', error);
       console.log('Solicitud de Cotización Guardada:', this.solicitudCotizacionActual);
       this.mostrarCarga = false; // Ocultar indicador de carga
+      this.pestanaActiva = 'misSolicitudes';
+
     }})};
 
-
+    estaPedidoEnSolicitud(pedido: any): boolean {
+      return this.solicitudes.some(p => p.id_orden_pedido_cabecera_fk === pedido.id_orden_pedido_cabecera_fk); // Cambia la condición según tu lógica
+    }
 
 
   private generarClavePedido(pedido: any): string {
@@ -963,6 +971,7 @@ guardarSolicitudDeCotizacion() {
                         this.proveedoresSeleccionados = [];
                         this.correoEnviado = true; 
                         this.mostrarCarga = false;
+                        this.pestanaActiva= 'misSolicitudes';
                       },
                       error: (error) => {
                         console.error('Error al actualizar el estado de los detalles de cotización:', error);

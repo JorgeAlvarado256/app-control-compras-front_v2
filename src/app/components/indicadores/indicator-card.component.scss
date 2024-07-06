@@ -1,50 +1,98 @@
-/* Estilos generales del navbar y contenedor de KPIs */
-.navbar {
+.kpi-navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f0f0f0;
-  padding: 10px 20px;
+  padding: 10px;
 }
 
-
-.kpi-navbar {
+.kpi-section {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+  background-color: #f8f9fa; /* Fondo del área de los KPI */
+  padding: 10px; /* Añade padding si es necesario */
 }
-
-
 
 .kpi-cards {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
 .kpi-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
+  /* Estilos base de las tarjetas de KPI */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  margin: 10px;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+  cursor: pointer; /* Cursor de manito al pasar por encima */
+  transition: background-color 0.3s ease;
 }
 
 .kpi-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+  background-color: #e0e0e0; /* Color de fondo al pasar el cursor */
 }
 
 .kpi-card img {
-  width: 50px; /* Ajusta el tamaño de la imagen según sea necesario */
-  height: auto;
+  width: 50px; /* Ancho de las imágenes de los KPIs */
+  height: 50px; /* Altura de las imágenes de los KPIs */
 }
 
 .kpi-title {
-  font-size: 14px;
-  font-weight: bold;
-  margin-top: 8px;
+  font-size: 14px; /* Tamaño de fuente del título del KPI */
+  margin-top: 5px;
 }
 
 .kpi-value {
-  font-size: 18px;
-  font-weight: normal;
+  font-size: 18px; /* Tamaño de fuente del valor del KPI */
+  font-weight: bold;
+}
+
+.kpi-selector {
+  /* Estilos específicos para el selector de KPIs */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px;
+}
+
+.kpi {
+  /* Estilos de cada KPI individual */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+  cursor: pointer; /* Cursor de manito al pasar por encima */
+}
+
+.kpi img {
+  width: 50px; /* Ancho de las imágenes de los KPIs */
+  height: 50px; /* Altura de las imágenes de los KPIs */
+}
+
+.kpi p {
+  font-size: 14px; /* Tamaño de fuente del título del KPI */
+  margin-top: 5px;
+}
+
+/* Estilos específicos para tarjetas de KPIs de estados recibidos */
+.kpi-card.pendientes {
+  background-color: #ffcccb; /* Color de fondo para estado pendiente */
+}
+
+.kpi-card.aprobados {
+  background-color: #cdebad; /* Color de fondo para estado aprobado */
+}
+
+.kpi-card.rechazados {
+  background-color: #ffd966; /* Color de fondo para estado rechazado */
+}
+
+.kpi-card.revision {
+  background-color: #d1ecf1; /* Color de fondo para estado en revisión */
 }

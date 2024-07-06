@@ -14,7 +14,8 @@ const routes: Routes = [
   { path: 'solicitante',component: SolicitanteComponent ,
     children: [
       { path: '', component: ProductoComponent },
-      { path: 'productos', component: ProductoComponent }
+      { path: 'productos', component: ProductoComponent },
+   
     ] ,
     canActivate: [AuthGuard] 
   }, // Ruta para solicitantes

@@ -56,4 +56,6 @@ export class AdquisidorService {
     const params = { compraDetalle };
     return this.http.post(this.apiUrl+this.rutaConfirmarCompraAdquisidor, params);
   }
+
+
 }

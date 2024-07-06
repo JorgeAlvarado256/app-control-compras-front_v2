@@ -10,14 +10,14 @@
   background-color: #f9f9f9;
 }
 
-.content-wrapper {
-  background: url('../../../img/wallpaperflare.com_wallpaper.jpg') no-repeat center center fixed; /* Ajusta la ruta según tu estructura de proyecto */
-  background-size: 50% auto; /* Asegura que la imagen cubra todo el fondo */
-  padding: 20px;
-  min-height: 100vh;
-  color: #000000;
-  overflow: hidden; /* Oculta el desbordamiento para un efecto limpio */
-}
+// .content-wrapper {
+//   background: url('../../../img/wallpaperflare.com_wallpaper.jpg') no-repeat center center fixed; /* Ajusta la ruta según tu estructura de proyecto */
+//   background-size: 50% auto; /* Asegura que la imagen cubra todo el fondo */
+//   padding: 20px;
+//   min-height: 100vh;
+//   color: #000000;
+//   overflow: hidden; /* Oculta el desbordamiento para un efecto limpio */
+// }
 
 .data-usuario {
   background-color: #fff;
@@ -617,4 +617,151 @@
   color: red;
   font-size: 18px;
   margin-top: 10px;
+}
+
+/* Estilos generales */
+.adquisidor-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+/* Estilos para la lista de pedidos */
+.producto-item {
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.producto-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.celda {
+  padding: 5px;
+}
+
+.celda-id {
+  width: 100px;
+}
+
+.celda-categoria {
+  width: 150px;
+}
+
+.celda-producto {
+  flex: 1;
+}
+
+.celda-cantidad {
+  width: 100px;
+}
+
+.producto-control {
+  display: flex;
+  align-items: center;
+}
+
+.cantidad-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* Estilos para el mensaje de no hay pedidos disponibles */
+.no-pedidos {
+  margin-top: 20px;
+  color: #999;
+}
+
+/* Estilos para la tabla de detalles de cotización */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.table-row:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Estilos para los botones y checkboxes */
+.btn-filtrar-pedido,
+.btn-enviar-solicitud {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-filtrar-pedido:hover,
+.btn-enviar-solicitud:hover {
+  background-color: #218838;
+}
+
+input[type="checkbox"] {
+  transform: scale(1.5);
+  margin-right: 5px;
+}
+
+/* Estilos específicos para el componente expandido */
+.cotizacion-header {
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.cotizacion-header p {
+  margin: 0;
+}
+
+.cotizacion-header:hover {
+  background-color: #0056b3;
+}
+
+.toolTip {
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 3px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para la clase control en el producto-control */
+.control {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+/* Estilos para el botón Agregar */
+.cantidad-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.cantidad-button:hover {
+  background-color: #0056b3;
 }

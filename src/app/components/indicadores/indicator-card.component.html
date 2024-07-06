@@ -5,117 +5,55 @@
 
   <!-- Contenedor de indicadores KPI -->
   <div class="kpi-navbar">
-    <!-- Indicadores Mis pedidos para roles 3 -->
-    <div class="kpi-section" *ngIf="codRolUsuario === 3">
+    <ng-container *ngIf="codRolUsuario === 3">
       <div class="kpi-cards">
-        <div class="kpi-card small" (click)="seleccionarKPI('TODOS')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/purchase-order.png" alt="Icono de Órdenes de Pedido">
-          <div class="kpi-title">Órdenes de Pedido</div>
-          <div class="kpi-value">{{ misPedidos.length }}</div>
-        </div>
-        
-        <div class="kpi-card small" (click)="seleccionarKPI('PENR')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/in-transit.png" alt="Icono de Pendientes">
-          <div class="kpi-title">Pendientes</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('PENR') }}</div>
-        </div>
-        
-        <div class="kpi-card small" (click)="seleccionarKPI('APRC')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/approval.png" alt="Icono de Aprobados">
-          <div class="kpi-title">Aprobados</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('APRC') }}</div>
-        </div>
-        
-        <div class="kpi-card small" (click)="seleccionarKPI('RECJ')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/high-importance.png" alt="Icono de Rechazados">
-          <div class="kpi-title">Rechazados</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('RECJ') }}</div>
-        </div>
-        
-        <div class="kpi-card small" (click)="seleccionarKPI('REVJ')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/edit-property.png" alt="Icono de En Revisión">
-          <div class="kpi-title">En Revisión</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('REVJ') }}</div>
-        </div>
+        <app-kpi-card 
+          *ngFor="let estado of estadosSolicitantes" 
+          [estado]="estado"
+          [total]="contarPedidosPorEstado(estado.codigo)"
+          (click)="seleccionarKPI(estado.codigo)">
+        </app-kpi-card>
       </div>
-    </div>
-    
-    <!-- Indicadores para rol 4 -->
-    <div class="kpi-section" *ngIf="codRolUsuario === 4">
+    </ng-container>
+
+    <!-- <ng-container *ngIf="codRolUsuario === 4">
       <div class="kpi-cards">
-        <div class="kpi-card small" (click)="seleccionarKPI('PENR')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/in-transit.png" alt="Icono de Pendientes">
-          <div class="kpi-title"> Pedidos Pendientes Recibidos</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('PENR') }}</div>
-        </div>
-    
-        <div class="kpi-card small" (click)="seleccionarKPI('APRC')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/approval.png" alt="Icono de Aprobados">
-          <div class="kpi-title">Pedidos Aprobados Recibidos</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('APRC') }}</div>
-        </div>
-    
-        <div class="kpi-card small" (click)="seleccionarKPI('RECJ')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/high-importance.png" alt="Icono de Rechazados">
-          <div class="kpi-title">Pedidos Rechazados Recibidos</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('RECJ') }}</div>
-        </div>
-    
-        <div class="kpi-card small" (click)="seleccionarKPI('REVJ')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/edit-property.png" alt="Icono de En Revisión">
-          <div class="kpi-title">Pedidos en Revisión Recibidos</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('REVJ') }}</div>
-        </div>
+        <app-kpi-card 
+          *ngFor="let estado of estadosRecibidos" 
+          [estado]="estado"
+          [total]="contarPedidosPorEstado(estado.codigo)"
+          (click)="seleccionarKPI(estado.codigo)">
+        </app-kpi-card>
       </div>
-    </div>
-    
-    <!-- Indicadores para roles distintos de jefe -->
-    <div class="kpi-section" *ngIf="codRolUsuario !== 3 && codRolUsuario !== 4">
+    </ng-container> -->
+
+    <ng-container *ngIf="codRolUsuario === 4">
       <div class="kpi-cards">
-        <div class="kpi-card small" (click)="seleccionarKPI('PENR')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/in-transit.png" alt="Icono de Pendientes">
-          <div class="kpi-title">Mis Pedidos Pendientes</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('PENR') }}</div>
-        </div>
-    
-        <div class="kpi-card small" (click)="seleccionarKPI('APRC')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/approval.png" alt="Icono de Aprobados">
-          <div class="kpi-title">Pedidos Aprobados</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('APRC') }}</div>
-        </div>
-    
-        <div class="kpi-card small" (click)="seleccionarKPI('RECJ')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/high-importance.png" alt="Icono de Rechazados">
-          <div class="kpi-title">Pedidos Rechazados</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('RECJ') }}</div>
-        </div>
-    
-        <div class="kpi-card small" (click)="seleccionarKPI('REVJ')">
-          <img src="https://img.icons8.com/ios-glyphs/96/000000/edit-property.png" alt="Icono de En Revisión">
-          <div class="kpi-title">Pedidos en Revisión Recibidos</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado('REVJ') }}</div>
-        </div>
+        <app-kpi-card 
+          *ngFor="let estado of estadosSolicitantes" 
+          [estado]="estado"
+          [total]="contarPedidosPorEstado(estado.codigo)"
+          (click)="seleccionarKPI(estado.codigo)">
+        </app-kpi-card>
       </div>
-    </div>
-    
-    
-    <!-- Indicadores para rol 5 -->
-    <div class="kpi-section" *ngIf="codRolUsuario === 5">
+    </ng-container>
+
+    <ng-container *ngIf="codRolUsuario === 5">
       <div class="kpi-cards">
-        <div class="kpi-card small" (click)="seleccionarKPI('TODOS')">
-          <img src="https://img.icons8.com/?size=50&id=NKRM4VSa2hw2&format=png&color=000000" alt="Folder Icon">
-          <div class="kpi-title">Cotizaciones</div>
-          <div class="kpi-value">{{ misCotizaciones.length }}</div>
-        </div>
-  
-        <div class="kpi-card small" (click)="seleccionarKPI('PENR')">
-          <img src="https://img.icons8.com/?size=50&id=NKRM4VSa2hw2&format=png&color=000000" alt="Folder Icon">
-          <div class="kpi-title">Órdenes de Compra</div>
-          <div class="kpi-value">{{ misOrdenesCompra.length }}</div>
-        </div>
+        <app-kpi-card
+          [estado]="{codigo: 'TODOS', titulo: 'Cotizaciones', icono: 'https://img.icons8.com/?size=50&id=NKRM4VSa2hw2&format=png&color=000000'}"
+          [total]="misCotizaciones.length"
+          (click)="seleccionarKPI('TODOS')">
+        </app-kpi-card>
+        <app-kpi-card
+          [estado]="{codigo: 'PENR', titulo: 'Órdenes de Compra', icono: 'https://img.icons8.com/?size=50&id=NKRM4VSa2hw2&format=png&color=000000'}"
+          [total]="misOrdenesCompra.length"
+          (click)="seleccionarKPI('PENR')">
+        </app-kpi-card>
       </div>
-    </div>
+    </ng-container>
   </div>
 
   <!-- Otros elementos del navbar como perfil, configuración, etc. -->
 </nav>
+<app-pantalla-carga *ngIf="mostrarCarga"></app-pantalla-carga>

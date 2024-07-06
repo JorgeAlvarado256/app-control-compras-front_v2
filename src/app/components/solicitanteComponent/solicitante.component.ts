@@ -72,6 +72,8 @@ export class SolicitanteComponent implements AfterViewInit  {
   mostrarListaPedidos: boolean = false;
   mostrarPedidosFiltrados: boolean = false;
   mostrarPedidos: boolean = false; // Variable para controlar la visibilidad de la sección de pedidos
+  mostrarPedidosRecibidos: boolean = false; // Variable para controlar la visibilidad de la sección de pedidos
+  mostrarPedidosJefatura: boolean = false;
   pedidosFiltrados: any[] = [];
   misOrdenesCompra: any[] = []; // Puedes cambiar 'any[]' por el tipo de datos apropiado
   misCotizaciones: any[] = []; // Puedes cambiar 'any[]' por el tipo de datos apropiado
@@ -105,65 +107,65 @@ export class SolicitanteComponent implements AfterViewInit  {
     this.mostrarCarga = true;
     const fechaActualFormatted = this.datePipe.transform(new Date(), 'dd/MM/yyyy');
     this.fechaActual = fechaActualFormatted || 'Fecha no disponible';
-
+  
     const navigationState = window.history.state;
     if (navigationState && navigationState.usuario) {
       this.usuario = navigationState.usuario as Usuario;
       this.listarMisPedidos(this.usuario.rut_usuario, this.usuario.cod_rol);
     }
+  
     this.solicitanteService.getDepartamento(this.usuario.id_departamento).subscribe({
-      next:(data)=>{
+      next: (data) => {
         this.nombreDepartamento = data.nom_departamento;
       }
     });
+  
     this.pestanaActiva = 'misPedidos';
-
+  
     this.empresaService.getEmpresa(this.usuario.rut_empresa).subscribe({
-      next:(data) => {
-        if(data){
+      next: (data) => {
+        if (data) {
           this.empresa = data as Empresa;
           this.razon_social = this.empresa.razon_social;
-          //this.mostrarCarga = false;
         }
       },
-      error:(error) => {
+      error: (error) => {
         console.error('Error al obtener datos de la Empresa', error);
         alert('Error al obtener datos de la Empresa:' + error)
       },
     });
-
+  
     this.solicitanteService.getCategorias(this.usuario.rut_empresa).subscribe({
-      next:(data) => {
+      next: (data) => {
         this.categoriasProductos = data;
         this.mostrarCarga = false;
       },
-      error:(error) => {
+      error: (error) => {
         console.error('Error al listar categorías', error);
         alert('Error al listar categorías:' + error);
-        this.mostrarCarga=false;
+        this.mostrarCarga = false;
       }
     });
-
+  
     this.estadoPedidoService.obtenerEstadoPedido().subscribe({
-      next:(data)=>{
-        this.listaEstadosPedido=data;
+      next: (data) => {
+        this.listaEstadosPedido = data;
         this.opcionesEstado = this.listaEstadosPedido.filter(item => item.tipo_estado === "PEDIDO").map(item => item.descripcion_estado);
         this.toolTipEstado = this.listaEstadosPedido.map(item => item.descripcion_estado);
         this.mostrarCarga = false;
       },
-      error: (error)=>{
+      error: (error) => {
         console.error('Error al listar estados', error);
         alert('Error al listar estados:' + error)
-        this.mostrarCarga=false;
+        this.mostrarCarga = false;
       }
-    });   
-    
-
+    });
+  
     this.opcionSeleccionada = 'TODOS';
     this.listarProductos();
-
-
+    
   }
+  
 
   
   ngAfterViewInit() {
@@ -177,39 +179,31 @@ export class SolicitanteComponent implements AfterViewInit  {
     }
   }
   
+  
   obtenerToolTip(estado: string):string{
     return this.listaEstadosPedido.find(item => item.nombre_estado === estado).descripcion_estado??'';
   }
   
   filtrarPedidosPorKPI(kpiSeleccionado: string) {
-    const estadosValidos = ['TODOS', 'PENR', 'REVJ', 'RECJ', 'APRC', 'APRO', 'PCOM', 'PEDC', 'PEDP'];
-  
-    if (!estadosValidos.includes(kpiSeleccionado)) {
-      console.log('Estado de seguimiento no válido.');
-      this.mostrarTablaPedidos = false;
-      this.misPedidosFiltrados = [];
-      return;
-    }
-  
-    this.filtroActual = kpiSeleccionado;
+    const estadosValidos = ['PENR', 'REVJ', 'RECJ', 'APRC', 'APRO', 'PCOM', 'PEDC', 'PEDP'];
   
     if (kpiSeleccionado === 'TODOS') {
-      this.misPedidosFiltrados = this.misPedidos.slice(); // Copia todos los pedidos
-    } else if (kpiSeleccionado === 'APRO') {
-      this.misPedidosFiltrados = this.misPedidos.filter(
-        pedido => pedido.estado_seguimiento === 'APRO' || pedido.estado_seguimiento === 'APRC'
-      );
+      this.misPedidosFiltrados = this.misPedidos;
+    } else if (estadosValidos.includes(kpiSeleccionado)) {
+      if (kpiSeleccionado === 'APRO') {
+        this.misPedidosFiltrados = this.misPedidos.filter(pedido => ['APRO', 'APRC'].includes(pedido.estado_seguimiento));
+      } else {
+        this.misPedidosFiltrados = this.misPedidos.filter(pedido => pedido.estado_seguimiento === kpiSeleccionado);
+      }
     } else {
-      this.misPedidosFiltrados = this.misPedidos.filter(
-        pedido => pedido.estado_seguimiento === kpiSeleccionado
-      );
+      this.misPedidosFiltrados = [];
     }
   
-    this.mostrarTablaPedidos = this.misPedidosFiltrados.length > 0;
-  
-    console.log('Pedidos totales:', this.misPedidos);
-    console.log('Pedidos filtrados:', this.misPedidosFiltrados);
+    // Ocultar la tabla si no hay pedidos filtrados o si no se utiliza ningún KPI para filtrar
+    this.mostrarTablaPedidos = kpiSeleccionado !== 'TODOS' && this.misPedidosFiltrados.length > 0;
+    this.mostrarPedidos = this.mostrarTablaPedidos;
   }
+  
 // Método para filtrar pedidos del usuario jefe según un KPI seleccionado
 filtrarPedidosJefe(kpiSeleccionado: string) {
   const estadosValidos = ['TODOS', 'PENR', 'REVJ', 'RECJ', 'APRC', 'APRO', 'PCOM', 'PEDC', 'PEDP'];
@@ -472,7 +466,7 @@ cerrarDetallesPedido() {
         alert("Orden de pedido generada exitósamente");
         this.productosSeleccionados = [];
         this.productosPorCategoria = [];
-        this.navCrearPedido();
+        this.navMisPedidosSolicitantes();
         this.listarMisPedidos(this.usuario.rut_usuario, this.usuario.cod_rol);
         this.listarProductos();
         this.navegacion = '';
@@ -519,52 +513,82 @@ cerrarDetallesPedido() {
     this.mostrarIndicatorCard = false; // Ocultar el indicador de tarjeta
     this.pestanaActiva = 'crearPedido'; // Activar la pestaña de crear pedido
     this.mostrarSolicitudesRecibidas = false; // Asegurarse de ocultar las solicitudes recibidas
+    this.mostrarPedidosJefatura=false;
+
+    
   }
   
   
-
-  navMisPedidos() {
-    if (this.mostrarPedidos) {
-      // Si ya se están mostrando los pedidos, ocultarlos
+  navMisPedidosSolicitantes() {
+    // Mostrar pedidos para roles 3 y 4 (Solicitantes)
+    if (this.codRolUsuario === 3 || this.codRolUsuario === 4) {
       this.mostrarPedidos = false;
-      this.mostrarTablaPedidos = false;
-      this.mostrarIndicatorCard = false;
-      this.pestanaActiva = '';
-      this.mostrarSolicitudesRecibidas = false; // Asegurarse de ocultar las solicitudes recibidas
-    } else {
-      // Si no se están mostrando los pedidos, mostrarlos y ocultar otros elementos
-      this.mostrarPedidos = true;
-      this.mostrarTablaPedidos = true; // Asegurarse de tener esta propiedad definida
-      this.mostrarIndicatorCard = true; // Mostrar el indicador de tarjeta
+      this.mostrarTablaPedidos = true;
+      this.mostrarIndicatorCard = true;
       this.mostrarCategoriasProductos = false;
       this.mostrarResumen = false;
-      this.pestanaActiva = 'misPedidos';
-      this.mostrarSolicitudesRecibidas = false; // Asegurarse de ocultar las solicitudes recibidas
-    }
-  }
-  
-  navMisPedidosRecibidos() {
-    if (this.mostrarSolicitudesRecibidas) {
-      // Si ya se están mostrando las solicitudes recibidas, ocultarlas
+      this.pestanaActiva = 'mostrarMisSolicitudes';
       this.mostrarSolicitudesRecibidas = false;
-      this.mostrarTablaPedidos = false; // Asegurarse de ocultar la tabla de pedidos
-      this.mostrarIndicatorCard = false; // Asegurarse de ocultar el indicador de tarjeta
-      this.pestanaActiva = ''; // Reiniciar la pestaña activa
+      this.mostrarPedidosJefatura=false;
+
     } else {
-      // Si no se están mostrando las solicitudes recibidas, mostrarlas y ocultar otros elementos
-      this.mostrarSolicitudesRecibidas = true;
-      this.mostrarTablaPedidos = false; // Asegurarse de ocultar la tabla de pedidos
-      this.mostrarIndicatorCard = true; // Mostrar el indicador de tarjeta
-      this.mostrarCategoriasProductos = false; // Asegurarse de ocultar las categorías de productos
-      this.mostrarResumen = false; // Asegurarse de ocultar el resumen
-      this.pestanaActiva = 'misPedidosRecibidos'; // Activar la pestaña de pedidos recibidos
-      this.mostrarPedidos = false; // Asegurarse de ocultar la vista de pedidos
+      // Ocultar pedidos para otros roles
+      this.mostrarPedidos = false;
+      this.mostrarTablaPedidos = true;
+      this.mostrarIndicatorCard = false;
+      this.pestanaActiva = '';
+      this.mostrarSolicitudesRecibidas = false;
     }
   }
   
+navMisPedidosJefatura() {
+  // Mostrar pedidos para rol 4 (Jefatura)
+  if (this.codRolUsuario === 4) {
+    this.mostrarPedidos = false;
+    this.mostrarTablaPedidos = true;
+    this.mostrarIndicatorCard = true;
+    this.mostrarCategoriasProductos = false;
+    this.mostrarResumen = false;
+    this.pestanaActiva = 'mostrarMisSolicitudes';
+    this.mostrarSolicitudesRecibidas = false;
+    this.mostrarPedidosJefatura=true;
+
+  } else {
+    // Ocultar pedidos para otros roles
+    this.mostrarPedidos = false;
+    this.mostrarTablaPedidos = true;
+    this.mostrarIndicatorCard = false;
+    this.mostrarCategoriasProductos = false;
+    this.mostrarResumen = false;
+    this.pestanaActiva = '';
+  }
+}
+
+navMisPedidosRecibidos() {
+  // Mostrar pedidos recibidos solo para rol 4
+  if (this.codRolUsuario === 4) {
+    this.mostrarPedidos = false;
+    this.mostrarTablaPedidos = true; // Asegúrate de que esta variable controle la visualización de la tabla de pedidos
+    this.mostrarIndicatorCard = true; // Asegúrate de que esta variable controle la visualización del indicador de KPIs
+    this.mostrarCategoriasProductos = false; // Asegúrate de que esta variable controle la visualización de categorías y productos
+    this.mostrarResumen = false; // Asegúrate de que esta variable controle la visualización del resumen de productos seleccionados
+    this.pestanaActiva = 'mostrarPedidosRecibidos'; // Asegúrate de que esta variable defina la pestaña activa para pedidos recibidos
+    this.mostrarSolicitudesRecibidas = true;
+    this.mostrarPedidosJefatura=false;
+    // Asegúrate de que esta variable sea verdadera cuando muestras las solicitudes recibidas
+  } else {
+    // Ocultar pedidos recibidos para otros roles
+    this.mostrarPedidos = false;
+    this.mostrarTablaPedidos = false;
+    this.mostrarIndicatorCard = false;
+    this.mostrarCategoriasProductos = false;
+    this.mostrarResumen = false;
+    this.pestanaActiva = ''; // Asegúrate de que esta variable esté vacía cuando no haya ninguna pestaña activa
+    this.mostrarSolicitudesRecibidas = false;
+  }
+}
+
   
-
-
 
 
 

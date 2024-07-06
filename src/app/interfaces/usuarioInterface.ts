@@ -7,4 +7,5 @@ export interface Usuario {
   cod_rol: number;
   id_departamento: number;
   email_usuario?: string | null;
+  
 }
