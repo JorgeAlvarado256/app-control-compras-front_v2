@@ -11,7 +11,7 @@
   <!-- Add any other necessary links to fonts or libraries -->
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar layout-fixed">
   <div class="wrapper">
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -47,48 +47,56 @@
             <p>{{ usuario.nombre_usuario }}</p>
           </div>
         </div>
-        <nav class="mt-2">
+        <nav class="mt-2" style="font-size: 16px; padding: 10px;">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-            <li class="nav-item">
-              <a class="nav-link" (click)="navCrearSolicitudCotizacion()">
-                <i class="nav-icon fas fa-folder"></i>
-                <p>Crear solicitud de cotización</p>
+            <li class="nav-item" [ngClass]="{ 'menu-open': subMenuActivo === 'compras' }">
+              <a class="nav-link" (click)="toggleSubMenu('compras')">
+                <span class="icon-rocket"></span>
+                <p>Opciones de compras</p>
+                <span class="caret icon-arrow-down6"></span>
               </a>
+              <ul class="nav nav-treeview" [ngStyle]="{ 'max-height': subMenuActivo === 'compras' ? '500px' : '0' }">
+                <li class="nav-item">
+                  <a class="nav-link" (click)="navCrearOrdenCompra()">
+                    <span class="icon-dot"></span>
+                    <p>Solicitar Orden de compra</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" (click)="navOrdenesCompras()">
+                    <span class="icon-dot"></span>
+                    <p>Consulta de orden de compra</p>
+                  </a>
+                </li>
+              </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" (click)="navMisSolicitudes()">
-                <i class="nav-icon fas fa-folder"></i>
-                <p>Solicitudes de cotización</p>
+            <li class="nav-item" [ngClass]="{ 'menu-open': subMenuActivo === 'cotizacion' }">
+              <a class="nav-link" (click)="toggleSubMenu('cotizacion')">
+                <span class="icon-dot"></span>
+                <p>Opciones de Cotización</p>
+                <span class="caret icon-arrow-down6"></span>
               </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" (click)="navCrearOrdenCompra()">
-                <i class="nav-icon fas fa-folder"></i>
-                <p>Crear Órdenes de compra</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" (click)="navOrdenesCompras()">
-                <i class="nav-icon fas fa-folder"></i>
-                <p>Órdenes de compra</p>
-              </a>
+              <ul class="nav nav-treeview" [ngStyle]="{ 'max-height': subMenuActivo === 'cotizacion' ? '500px' : '0' }">
+                <li class="nav-item">
+                  <a class="nav-link" (click)="navMisSolicitudes()">
+                    <span class="icon-dot"></span>
+                    <p>Consulta  Cotización</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" (click)="navCrearSolicitudCotizacion()">
+                    <span class="icon-dot"></span>
+                    <p>Solicitar Cotización</p>
+                  </a>
+                </li>
+              </ul>
             </li>
           </ul>
         </nav>
       </div>
     </aside>
-
-
-
-
-
-    <!-- /.sidebar -->
-
-    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-      <!-- Main content -->
       <section class="content">
-        <div class="container-fluid">
           <!-- Content here -->
           <div class="crear-orden-container" *ngIf="pestanaActiva === 'crearOrdenCompra'">
             <div class="seleccionar-productos-container" *ngIf="listaPedidos">
@@ -104,7 +112,7 @@
               <h3>Pedidos Disponibles</h3>
               <div class="tabla-pedidos">
                 <div class="fila-cabecera">
-                  <div class="celda celda-cabecera celda-id">ID Pedido</div>
+                  <div class="celda celda-cabecera celda-id">N° Pedido</div>
                   <div class="celda celda-cabecera celda-categoria">Categoría</div>
                   <div class="celda celda-cabecera celda-producto">Producto</div>
                   <div class="celda celda-cabecera celda-cantidad">Cantidad</div>
@@ -168,47 +176,54 @@
 
 
           <div class="crear-orden-container" *ngIf="pestanaActiva === 'crearSolicitudCotizacion'">
-            <h3>Mostrar solicitudes de cotización</h3>
-
-            <div class="seleccionar-productos-container" *ngIf="listaPedidosParaCotizacion">
-              <div class="pedidos-disponibles">
-                <h3>Pedidos Disponibles</h3>
-                <!-- Pedidos Disponibles -->
-                <div class="fila-cabecera">
-                  <div class="celda celda-cabecera celda-id">ID Pedido</div>
-                  <div class="celda celda-cabecera celda-categoria">Categoría</div>
-                  <div class="celda celda-cabecera celda-producto">Producto</div>
-                  <div class="celda celda-cabecera celda-cantidad">Cantidad</div>
-                  <div class="celda celda-cabecera celda-control">Acciones</div>
-                </div>
-                <!-- Verifica si listaPedidos está vacía -->
-                <ng-container *ngIf="listaPedidos && listaPedidos.length > 0; else noPedidos">
-                  <div *ngFor="let pedido of listaPedidos">
-                    <!-- Aplica la condición para no mostrar si está en misSolicitudes -->
-                    <div class="producto-item fila" *ngIf="!estaPedidoEnSolicitud(pedido)">
-                      <div class="producto-info">
-                        <div class="celda celda-id">{{ pedido.id_orden_pedido_cabecera_fk }}</div>
-                        <div class="celda celda-categoria">{{ pedido.producto?.categoria?.nombre_categoria }}</div>
-                        <div class="celda celda-producto">{{ pedido.producto?.nombre_producto }}</div>
-                        <div class="celda celda-cantidad">{{ pedido.cantidad_solicitada }}</div>
-                        <div class="celda celda-control">
-                          <!-- Aquí van los botones de acción -->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ng-container>
-
-                <!-- Mensaje cuando no hay pedidos disponibles -->
-                <ng-template #noPedidos>
-                  <p>No hay pedidos disponibles.</p>
-                </ng-template>
-
-              </div>
-
+            <h3>Crear Solicitud de Cotización</h3>
+          
+            <!-- Detalles del solicitante -->
+            <div class="detalles-solicitante">
+              <h4>Detalles del Solicitante</h4>
+              <p><strong>Departamento:</strong> {{ nombreDepartamento }}</p>
+              <p><strong>Fecha:</strong> {{ fechaActual | date: 'dd/MM/yyyy' }}</p>
+              <p><strong>Usuario:</strong> {{ usuario.nombre_usuario }}</p>
             </div>
-
-            <div class="solicitud-cotizacion-container"
+          
+            <div class="tabla-container">
+              <!-- Pedidos Disponibles -->
+              <div class="seleccionar-productos-container">
+                <h3>Pedidos Disponibles</h3>
+          
+                <table class="tabla-pedidos">
+                  <thead>
+                    <tr>
+                      <th>N° Pedido</th>
+                      <th>Categoría</th>
+                      <th>Producto</th>
+                      <th>Cantidad</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngIf="misPedidosFiltrados && misPedidosFiltrados.length > 0; else noPedidos">
+                      <tr *ngFor="let pedido of misPedidosFiltrados">
+                        <td>{{ pedido.id_orden_pedido_cabecera_fk }}</td>
+                        <td>{{ pedido.producto?.categoria?.nombre_categoria }}</td>
+                        <td>{{ pedido.producto?.nombre_producto }}</td>
+                        <td>{{ pedido.cantidad_solicitada }}</td>
+                        <td>
+                          <button (click)="agregarPedidoASolicitud(pedido)">Agregar a Cotización</button>
+                          <span *ngIf="pedidoAgregado(pedido)">Agregado</span>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+          
+                <ng-template #noPedidos>
+                  <p class="no-pedidos">No hay pedidos disponibles.</p>
+                </ng-template>
+              </div>
+          
+              <!-- Resumen de Solicitud de Cotización -->
+              <div class="solicitud-cotizacion-container"
               *ngIf="solicitudCotizacionActual.length > 0 && solicitudCotizacionActual[0]?.detalles?.length > 0">
               <h3>Resumen de Solicitud de Cotización</h3>
               <div *ngFor="let detalle of solicitudCotizacionActual[0]?.detalles" class="detalle-solicitud-cotizacion">
@@ -224,173 +239,125 @@
               <button
                 [disabled]="solicitudCotizacionActual.length === 0 || solicitudCotizacionActual[0]?.detalles?.length === 0"
                 (click)="guardarSolicitudDeCotizacion()">Generar Solicitud de Cotización</button>
+            </div>           
+              
             </div>
           </div>
-
-
-
-
+          
           <div *ngIf="pestanaActiva === 'ordenesCompras'" class="orden-compra-item">
-            <!-- <h3>Ordenes de Compras</h3> -->
-            <div class="filtros-container">
-              <div class="filtro-estado">
-                Estado:
-                <!-- <select [(ngModel)]="opcionEstadoSeleccionada">
-                  <option value="TODOS">TODOS</option>
-                  <option *ngFor="let opcion of opcionesEstadoCompra" [value]="opcion">{{ opcion }}</option>
-                </select> -->
-              </div>
-              <!-- <div class="filtros-fechas-container">
-                <label for="fecha-desde">Desde:</label>
-                <input type="date" id="fecha-desde" [(ngModel)]="fechaDesde">
-
-                <label for="fecha-hasta">Hasta:</label>
-                <input type="date" id="fecha-hasta" [(ngModel)]="fechaHasta">
-              </div> -->
-              <!-- <div class="btn-filtrar-compra">
-                <button class="btn-filtrar-pedido" (click)="filtrarEstadosCompra()">Filtrar</button>
-              </div> -->
-            </div>
-            <div *ngIf="ordenesDeCompra.length > 0; else noOrdenesCompras">
+            <div *ngIf="ordenesDeCompra.length > 0">
               <div class="orden-compra" *ngFor="let ordenCompra of ordenesDeCompra; let i = index">
                 <div class="cabecera-orden-compra" (click)="ordenesDeCompra[i].expanded = !ordenesDeCompra[i].expanded">
-                  <p>ID: {{ ordenCompra.id_orden_compra_cabecera }}</p>
-                  <p>Proveedor: {{ ordenCompra.rut_proveedor }}</p>
-                  <p>Total Compra: {{ ordenCompra.total_compra }}</p>
-                  <p>Fecha: {{ ordenCompra.fecha_emision }}</p>
-                  <p>Estado: <span [pTooltip]="tooltipContent">{{ obtenerToolTip(ordenCompra.estado_seguimiento)
-                      }}</span></p>
+                  <p class="tag blue">N° Orden de Compra: {{ ordenCompra.id_orden_compra_cabecera }}</p>
+                  <p class="tag yellow">Proveedor: {{ ordenCompra.rut_proveedor }}</p>
+                  <p class="tag blue">Total Compra: {{ ordenCompra.total_compra }}</p>
+                  <p class="tag yellow">Fecha: {{ ordenCompra.fecha_emision }}</p>
+                  <p class="tag blue">Estado: <span [pTooltip]="tooltipContent">{{ obtenerToolTip(ordenCompra.estado_seguimiento) }}</span></p>
                   <ng-template #tooltipContent>
                     <div class="toolTip">
-                      <span>
-                        {{ordenCompra.estado_seguimiento}}
-                      </span>
+                      <span>{{ ordenCompra.estado_seguimiento }}</span>
                     </div>
                   </ng-template>
                 </div>
-
                 <div class="detalle-orden-compra" *ngIf="ordenesDeCompra[i].expanded">
-                  <div class="detalle-orden-compra-item" *ngFor="let detalle of ordenCompra.detalles">
-                    <div class="detalle-compra-vista">
-                      <p>Producto: {{ detalle.producto?.nombre_producto }}</p>
-                      <p>Cantidad Solicitada: {{ buscarItem(detalle.id_orden_compra_detalle,'cantidad_solicitada' ) }}
-                      </p>
-                      <p *ngIf="!editandoDetalle">Precio Unitario: {{ detalle.precio_unitario }}</p>
-                      <p *ngIf="editandoDetalle">Precio Unitario: <input *ngIf="editandoDetalle"
-                          [disabled]="detalleEnListaEliminar(detalle)" type="number"
-                          [(ngModel)]="detalle.precio_unitario">
-                      </p>
-                      <p>Precio Total: {{ buscarItem(detalle.id_orden_compra_detalle,'cantidad_solicitada') *
-                        detalle.precio_unitario }}</p>
-                      <p
-                        *ngIf="ordenCompra.estado_seguimiento === 'APRCC' || ordenCompra.estado_seguimiento === 'APROC'">
-                        Cantidad Recepcionada: <input type="number" [(ngModel)]="detalle.cantidad_recepcionada"
-                          required></p>
-                      <p
-                        *ngIf="ordenCompra.estado_seguimiento !== 'APRCC' && ordenCompra.estado_seguimiento !== 'APROC'">
-                        Cantidad Recepcionada: {{ detalle.cantidad_recepcionada }}</p>
-                    </div>
-                    <div class="detalle-compra-icons">
-                      <i [ngClass]="{'btn-trash-icon-disabled': !eliminarHabilitado || (ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC'),
-                                                 'trash-presionado': detalleEnListaEliminar(detalle)}"
-                        class="fas fa-trash" (click)="habilitarEliminar(detalle); "></i>
-                      <i [ngClass]="{'btn-trash-icon-disabled': ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC'}"
-                        class="fas fa-pencil-alt"
-                        (click)="habilitarEdicion(ordenCompra.estado_seguimiento, ordenCompra.detalles)"></i>
-                    </div>
-                  </div>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Cantidad Solicitada</th>
+                        <th>Precio Unitario</th>
+                        <th>Precio Total</th>
+                        <th *ngIf="ordenCompra.estado_seguimiento === 'APRCC' || ordenCompra.estado_seguimiento === 'APROC'">Cantidad Recepcionada</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let detalle of ordenCompra.detalles">
+                        <td>{{ detalle.producto?.nombre_producto }}</td>
+                        <td>{{ buscarItem(detalle.id_orden_compra_detalle, 'cantidad_solicitada') }}</td>
+                        <td *ngIf="!editandoDetalle">{{ detalle.precio_unitario }}</td>
+                        <td *ngIf="editandoDetalle"><input type="number" [(ngModel)]="detalle.precio_unitario" [disabled]="detalleEnListaEliminar(detalle)"></td>
+                        <td>{{ buscarItem(detalle.id_orden_compra_detalle, 'cantidad_solicitada') * detalle.precio_unitario }}</td>
+                        <td *ngIf="ordenCompra.estado_seguimiento === 'APRCC' || ordenCompra.estado_seguimiento === 'APROC'">
+                          <input type="number" [(ngModel)]="detalle.cantidad_recepcionada" required>
+                        </td>
+                        <td>
+                          <i [ngClass]="{
+                              'btn-trash-icon-disabled': !eliminarHabilitado || (ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC'),
+                              'trash-presionado': detalleEnListaEliminar(detalle)
+                            }"
+                            class="fas fa-trash" (click)="habilitarEliminar(detalle);"></i>
+                          <i [ngClass]="{'btn-trash-icon-disabled': ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC'}"
+                            class="fas fa-pencil-alt" (click)="habilitarEdicion(ordenCompra.estado_seguimiento, ordenCompra.detalles)"></i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                   <div>
                     <p>Observaciones:</p>
-                    <textarea class="text-area" [(ngModel)]="ordenCompra.observaciones_gerencia"
-                      [disabled]="true"></textarea>
+                    <textarea class="text-area" [(ngModel)]="ordenCompra.observaciones_gerencia" [disabled]="true"></textarea>
                   </div>
                   <div>
-                    <button
-                      [disabled]="ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC'"
-                      [ngClass]="{'btn-trash-icon-disabled':ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC'}"
+                    <button [disabled]="ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC'"
+                      [ngClass]="{'btn-trash-icon-disabled': ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC'}"
                       class="btn-cancelar" (click)="cancelar()">Cancelar</button>
-                    <button
-                      *ngIf="ordenCompra.estado_seguimiento !== 'APRCC' && ordenCompra.estado_seguimiento !== 'APROC'"
+                    <button *ngIf="ordenCompra.estado_seguimiento !== 'APRCC' && ordenCompra.estado_seguimiento !== 'APROC'"
                       [disabled]="ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC' || !eliminarHabilitado"
                       [ngClass]="{'btn-trash-icon-disabled': ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC' || !eliminarHabilitado}"
                       class="btn-actualizar-pedido" (click)="actualizarCompra(ordenCompra)">Actualizar Compra</button>
-                    <button
-                      *ngIf="ordenCompra.estado_seguimiento === 'APRCC' || ordenCompra.estado_seguimiento === 'APROC'"
-                      class="btn-actualizar-pedido" (click)="confirmarRecepcion(ordenCompra)">Confirmar
-                      Recepción</button>
-                    <button
-                      [disabled]="ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC' "
-                      [ngClass]="{'btn-trash-icon-disabled':ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC'}"
-                      class="btn-cancelar-pedido" (click)="anularCompra(ordenCompra.id_orden_compra_cabecera)">Eliminar
-                      Compra</button>
+                    <button *ngIf="ordenCompra.estado_seguimiento === 'APRCC' || ordenCompra.estado_seguimiento === 'APROC'"
+                      class="btn-actualizar-pedido" (click)="confirmarRecepcion(ordenCompra)">Confirmar Recepción</button>
+                    <button [disabled]="ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC'"
+                      [ngClass]="{'btn-trash-icon-disabled': ordenCompra.estado_seguimiento !== 'PENRC' && ordenCompra.estado_seguimiento !== 'RECGC'}"
+                      class="btn-cancelar-pedido" (click)="anularCompra(ordenCompra.id_orden_compra_cabecera)">Eliminar Compra</button>
                   </div>
                 </div>
               </div>
             </div>
+            <ng-template #noOrdenesCompras>
+              <p>No hay órdenes de compra disponibles.</p>
+            </ng-template>
           </div>
+          
+          
+          
+          <ng-template #noOrdenesCompras>
+            <p>No hay órdenes de compra disponibles.</p>
+          </ng-template>
+          
+          
 
           <div *ngIf="pestanaActiva === 'misSolicitudes'" class="orden-compra-item">
             <h3>Mis Solicitudes de cotización</h3>
-
-            <!-- Filtro por categoría -->
-            <div class="filtro-categoria">
-              <label>Categoría:</label>
-              <select [(ngModel)]="opcionSeleccionada">
-                <option value="TODOS">TODOS</option>
-                <option *ngFor="let opcion of opcionesEstadoCotizacion" [value]="opcion">{{ opcion }}</option>
-              </select>
-              <button class="btn-filtrar-pedido" (click)="filtrarPedidosParaCotizacion()">Filtrar</button>
-            </div>
-
+          
+         
             <!-- Mostrar mensaje si no hay cotizaciones disponibles -->
-            <div *ngIf="cotizacionesAgrupadas.length === 0">
+            <div *ngIf="cotizacionesAgrupadas.length === 0" class="mensaje-vacio">
               <p>No hay solicitudes de cotización disponibles.</p>
             </div>
-
+          
             <!-- Iterar sobre las cotizaciones -->
             <div *ngFor="let cotizacion of cotizacionesAgrupadas; let i = index" class="cotizacion">
-              <!-- Encabezado de la cotización -->
-              <div class="cotizacion-header" (click)="toggleDetalles(i)">
-                <input type="checkbox" [(ngModel)]="cotizacionSeleccionada[i]"
-                  (click)="$event.stopPropagation(); toggleSeleccionCotizacion(i)">
-                <p>ID: {{ cotizacion.id_cotizacion }}</p>
-                <p>Fecha: {{ cotizacion.fecha_emision }}</p>
-                <p>Estado:
-                  <span [pTooltip]="tooltipContent">{{ obtenerToolTip(cotizacion.estado_seguimiento) }}</span>
-                  <ng-template #tooltipContent>
-                    <div class="toolTip">
-                      <span>{{ cotizacion.estado_seguimiento }}</span>
-                    </div>
-                  </ng-template>
-                </p>
-              </div>
-              <div *ngIf="listaPedidosParaCotizacion">
-                <div *ngFor="let pedido of listaPedidosParaCotizacion">
-                  <div class="producto-item fila" *ngIf="pedido.estado_seguimiento === 'PR'">
-                    <div class="producto-info">
-                      <div class="celda celda-id">{{ pedido.id_orden_pedido_cabecera_fk }}</div>
-                      <div class="celda celda-categoria">{{ pedido.producto?.categoria?.nombre_categoria }}</div>
-                      <div class="celda celda-producto">{{ pedido.producto?.nombre_producto }}</div>
-                      <div class="celda celda-cantidad">{{ pedido.cantidad_solicitada }}</div>
-                      <div class="producto-control control">
-                        <ng-container *ngIf="!pedidoAgregado(pedido)">
-                          <button (click)="agregarPedidoASolicitud(pedido)" class="cantidad-button">Agregar</button>
-                        </ng-container>
-                        <ng-container *ngIf="pedidoAgregado(pedido)">
-                          <p>Agregado</p>
-                        </ng-container>
-                      </div>
-                    </div>
+              <!-- Tarjeta de cotización -->
+              <div class="card">
+                <div class="card-header" (click)="toggleDetalles(i)">
+                  <input type="checkbox" [(ngModel)]="cotizacionSeleccionada[i]" (click)="$event.stopPropagation(); toggleSeleccionCotizacion(i)">
+                  <div>
+                    <span>N° de Cotizacion: {{ cotizacion.id_cotizacion }}</span>
+                    <span>Fecha: {{ cotizacion.fecha_emision }}</span>
+                    <span>Estado:
+                      <span [pTooltip]="tooltipContent">{{ obtenerToolTip(cotizacion.estado_seguimiento) }}</span>
+                      <ng-template #tooltipContent>
+                        <div class="toolTip">
+                          <span>{{ cotizacion.estado_seguimiento }}</span>
+                        </div>
+                      </ng-template>
+                    </span>
                   </div>
                 </div>
-              </div>
-              <!-- Mostrar contenido dependiendo del estado del correo enviado -->
-              <div *ngIf="cotizacion.estado_seguimiento !== 'EP'">
-                <!-- Mensaje si la cotización está seleccionada -->
-                <p *ngIf="cotizacionSeleccionada[i]">Cotización seleccionada</p>
-
+          
                 <!-- Detalles de la cotización -->
-                <div *ngIf="cotizacion.expanded">
+                <div *ngIf="cotizacion.expanded" class="card-body">
                   <!-- Tabla de detalles de la cotización -->
                   <table class="table" *ngIf="cotizacion.detalles && cotizacion.detalles.length > 0">
                     <thead>
@@ -406,67 +373,68 @@
                       </tr>
                     </tbody>
                   </table>
-
-                  <div *ngIf="!(cotizacion.detalles && cotizacion.detalles.length > 0)">
+          
+                  <!-- Mensaje si no hay detalles disponibles para esta cotización -->
+                  <div *ngIf="!(cotizacion.detalles && cotizacion.detalles.length > 0)" class="mensaje-vacio">
                     <p>No hay detalles disponibles para esta cotización.</p>
                   </div>
-
-                  <!-- Tabla de Selección de Proveedores -->
+          
+                  <!-- Mostrar tabla de selección de proveedores solo si la cotización no está en estado 'EP' -->
+                  <div *ngIf="cotizacion.estado_seguimiento !== 'EP'" class="proveedores-section">
+                    <h4>Seleccionar Proveedores</h4>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Seleccionar</th>
+                          <th>Proveedores</th>
+                          <th>Email</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let proveedor of proveedores">
+                          <td>
+                            <input type="checkbox" (change)="seleccionarProveedor(proveedor)" [checked]="proveedoresSeleccionados.includes(proveedor)">
+                          </td>
+                          <td>{{ proveedor.razon_social }}</td>
+                          <td>{{ proveedor.email_proveedor }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+          
+                    <!-- Botón para enviar solicitud a proveedores -->
+                    <button class="btn-enviar-solicitud" (click)="agregarProveedorCotizacion()" [disabled]="proveedoresSeleccionados.length === 0">Enviar Solicitud a Proveedores</button>
+                  </div>
+                </div>
+          
+                <!-- Mostrar detalles adicionales si el estado es 'EP' -->
+                <div *ngIf="cotizacion.estado_seguimiento === 'EP'" class="card-footer">
+                  <h3>Detalles de la Cotización</h3>
                   <table class="table">
                     <thead>
                       <tr>
-                        <th>Seleccionar</th>
-                        <th>Razón Social</th>
-                        <th>Email</th>
+                        <th>Producto</th>
+                        <th>Cantidad Solicitada</th>
+                        <th>Proveedor</th>
+                        <th>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let proveedor of proveedores">
+                      <tr *ngFor="let detalle of cotizacion.detalles">
+                        <td>{{ detalle.producto?.nombre_producto }}</td>
+                        <td>{{ detalle.cantidad_solicitada }}</td>
+                        <td>{{ proveedoresSeleccionados.length > 0 ? proveedoresSeleccionados[0]?.razon_social : '' }}</td>
                         <td>
-                          <input type="checkbox" (change)="seleccionarProveedor(proveedor)"
-                            [checked]="proveedoresSeleccionados.includes(proveedor)">
+                          <a *ngIf="detalle.archivo_pdf" href="{{ detalle.archivo_pdf }}" target="_blank" class="btn btn-primary">Vista Previa</a>
+                          <button class="btn btn-secondary" (click)="descargarCotizacion(detalle)">Descargar</button>
                         </td>
-                        <td>{{ proveedor.razon_social }}</td>
-                        <td>{{ proveedor.email_proveedor }}</td>
                       </tr>
                     </tbody>
                   </table>
-
-                  <!-- Botón para enviar solicitud a proveedores -->
-                  <button class="btn-enviar-solicitud" (click)="agregarProveedorCotizacion()"
-                    [disabled]="proveedoresSeleccionados.length === 0">Enviar Solicitud a Proveedores</button>
                 </div>
               </div>
-
-              <!-- Mostrar detalles con el proveedor escogido y los íconos si el correo ha sido enviado -->
-              <div *ngIf="cotizacion.estado_seguimiento === 'EP' ">
-                <h3>Detalles de la Cotización</h3>
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Producto</th>
-                      <th>Cantidad Solicitada</th>
-                      <th>Proveedor</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let detalle of cotizacion.detalles">
-                      <td>{{ detalle.producto?.nombre_producto }}</td>
-                      <td>{{ detalle.cantidad_solicitada }}</td>
-                      <td>{{ proveedoresSeleccionados.length > 0 ? proveedoresSeleccionados[0]?.razon_social : '' }}</td>
-                      <td>
-                        <a *ngIf="detalle.archivo_pdf" href="{{ detalle.archivo_pdf }}" target="_blank" class="btn btn-primary">Vista Previa</a>
-                        <button class="btn btn-secondary" (click)="descargarCotizacion(detalle)">Descargar</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              
             </div>
           </div>
-
+          
           <ng-template #noOrdenesCompras>
             <h2 class="msg-noOrdenesCompras">No existen órdenes de compra</h2>
           </ng-template>
@@ -478,22 +446,9 @@
           </ng-template>
 
 
-        </div>
       </section>
     </div>
-    <!-- /.content-wrapper -->
 
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-      <!-- Control sidebar content goes here -->
-      <div class="p-3">
-        <h5>Título de la barra lateral</h5>
-        <p>Contenido de la barra lateral</p>
-      </div>
-    </aside>
-    <!-- /.control-sidebar -->
-
-    <!-- Main Footer -->
     <footer class="main-footer">
       <!-- To the right -->
       <div class="float-right d-none d-sm-inline">
@@ -503,10 +458,6 @@
       <strong>Footer &copy; 2024 </strong> Todos los derechos reservados.
     </footer>
   </div>
-  <!-- ./wrapper -->
-
-  <!-- REQUIRED SCRIPTS -->
   <script src="https://adminlte.io/themes/v3/dist/js/adminlte.min.js"></script>
 </body>
-
 </html>

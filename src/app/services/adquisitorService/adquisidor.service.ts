@@ -57,5 +57,12 @@ export class AdquisidorService {
     return this.http.post(this.apiUrl+this.rutaConfirmarCompraAdquisidor, params);
   }
 
+  obtenerSolicitudes(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/solicitudes`);
+  }
 
+  obtenerListaPedidos(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/pedidos`);
+  }
+  
 }

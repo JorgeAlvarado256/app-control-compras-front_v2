@@ -6,6 +6,6 @@ export interface Cotizacion {
   estado_seguimiento: string;
   detalles: DetalleCotizacion[];
   rut_empresa: string;
-  expanded?: boolean; // Añadir esta línea si es necesario
-  noDetalles?: boolean; 
+  expanded?: boolean;
+  noDetalles?: boolean;
 }

@@ -490,7 +490,9 @@ cerrarDetallesPedido() {
         cantidad_comprada: null,
         cantidad_recepcionada: null,
         estado_seguimiento_producto: null,
-        id_orden_pedido_cabecera_fk: null
+        id_orden_pedido_cabecera_fk: 0,
+        orden_compra_detalle_fk: null,
+        rut_empresa: null
       };
       pedidoDetalles.push(pedidoDetalle);
     });

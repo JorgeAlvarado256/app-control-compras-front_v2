@@ -1,6 +1,14 @@
+/* Estilos generales */
 .page-container {
   background-color: #a19d9d;
   padding: 20px 0 600px;
+}
+
+.content-wrapper {
+  background: linear-gradient(135deg, #46269c 0%, #3c58a1 40%, #ffd700 100%);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .container-adquisidor {
@@ -9,15 +17,6 @@
   padding: 0 20px 50px;
   background-color: #f9f9f9;
 }
-
-// .content-wrapper {
-//   background: url('../../../img/wallpaperflare.com_wallpaper.jpg') no-repeat center center fixed; /* Ajusta la ruta según tu estructura de proyecto */
-//   background-size: 50% auto; /* Asegura que la imagen cubra todo el fondo */
-//   padding: 20px;
-//   min-height: 100vh;
-//   color: #000000;
-//   overflow: hidden; /* Oculta el desbordamiento para un efecto limpio */
-// }
 
 .data-usuario {
   background-color: #fff;
@@ -45,6 +44,15 @@
 .data-usuario .link-cerrar-sesion:hover {
   background: #f0f0f0;
 }
+nav {
+  font-size: 16px; /* Ajustar según necesidad */
+}
+
+.nav-pills,
+.nav-sidebar,
+.flex-column {
+  margin: 0;
+}
 
 .nav-pestana {
   display: flex;
@@ -65,44 +73,80 @@
 }
 
 .crear-orden-container {
-  display: flex;
-  flex-direction: row;
-  background-color: #eee;
-  padding-left: 10px;
-  border-radius: 0 0 8px 8px;
-  margin-bottom: 20px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 20px auto;
+  max-width: 800px;
 }
 
-.seleccionar-productos-container,
+h3, h4, h5 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.detalles-solicitante {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.detalles-solicitante p {
+  margin: 5px 0;
+}
+
+.fila-cabecera {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.solicitud-cotizacion-container {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.detalle-solicitud-cotizacion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.detalle-nombre-producto {
+  display: flex;
+  align-items: center;
+}
+
+.solicitud-control .btn-eliminar-detalle {
+  padding: 5px 10px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.solicitud-control .btn-eliminar-detalle:hover {
+  background-color: #c82333;
+}
+
 .orden-compra-container {
   padding: 20px;
-}
-
-.seleccionar-productos-container {
-  width: 55%;
-  border-right: 1px solid #ddd;
-}
-
-.producto-item .producto-info {
-  display: flex;
-  flex-direction: row;
-}
-
-.filtro-categoria {
-  margin-bottom: 5px;
-}
-
-.btn-filtrar-pedido {
-  margin-left: 20px;
-}
-
-.fecha-hasta {
-  margin-left: 10px;
-}
-
-.orden-compra-container {
-  width: 45%;
+  background-color: #f9f9f9;
 }
 
 .opciones-proveedor {
@@ -124,16 +168,6 @@
   margin-top: 2px !important;
 }
 
-.detalle-nombre-producto input {
-  max-width: 100px;
-  max-height: 15px;
-  justify-content: center;
-}
-
-.detalle-nombre-producto button {
-  margin-left: 5px;
-}
-
 .msg-noOrdenesCompras {
   text-align: center;
   font-size: 1.5em;
@@ -142,64 +176,57 @@
   padding-top: 30px;
 }
 
-.crear-orden-container {
-  padding: 20px;
-  background-color: #f4f6f9;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
+/* Estilos específicos para filtros y botones */
 .filtro-categoria {
-  margin-bottom: 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.tabla-pedidos {
-  margin-top: 20px;
-}
-
-.fila-cabecera {
-  display: flex;
+.filtro-categoria label {
+  margin-right: 10px;
   font-weight: bold;
 }
 
-.producto-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  padding: 10px;
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.filtro-categoria select {
+  margin-right: 10px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
 
-.celda {
-  flex: 1;
+.btn-filtrar-pedido {
   padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.orden-compra-container {
-  margin-top: 30px;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.pedidos-container {
+  display: flex;
+  justify-content: space-between;
 }
 
-.opciones-proveedor {
+.pedidos-disponibles,
+.solicitud-cotizacion-container {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.pedidos-disponibles h3,
+.solicitud-cotizacion-container h3 {
   margin-bottom: 20px;
 }
 
-.detalle-orden-compra {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.detalle-nombre-producto {
-  flex: 1;
+.cantidad-button {
+  padding: 5px 10px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .total-container {
@@ -207,475 +234,9 @@
   font-weight: bold;
 }
 
-.btn-filtrar-pedido, .btn-eliminar-detalle, .cantidad-button {
-  margin-top: 10px;
-}
-
 .btn-primary:disabled {
   background-color: #ccc;
   border-color: #ccc;
-}
-
-
-.crear-orden-container {
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.seleccionar-productos-container {
-    margin-top: 20px;
-}
-
-.filtro-categoria {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.filtro-categoria label {
-    margin-right: 10px;
-    font-weight: bold;
-}
-
-.filtro-categoria select {
-    margin-right: 10px;
-    padding: 5px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-.btn-filtrar-pedido {
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.pedidos-container {
-    display: flex;
-    justify-content: space-between;
-}
-
-.pedidos-disponibles, .solicitud-cotizacion-container {
-    flex: 1;
-    margin-right: 20px;
-}
-
-.pedidos-disponibles h3, .solicitud-cotizacion-container h3 {
-    margin-bottom: 20px;
-}
-
-.fila-cabecera {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px;
-    border-radius: 4px;
-}
-
-.celda {
-    padding: 10px;
-}
-
-.producto-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 4px;
-    margin-top: 10px;
-}
-
-.producto-info {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.celda-id, .celda-categoria, .celda-producto, .celda-cantidad {
-    flex: 1;
-    text-align: center;
-}
-
-.cantidad-button {
-    padding: 5px 10px;
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.solicitud-cotizacion-container {
-    padding: 20px;
-    background-color: #f1f1f1;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.detalle-solicitud-cotizacion {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
-    border-radius: 4px;
-    margin-top: 10px;
-}
-
-.detalle-nombre-producto {
-    display: flex;
-    align-items: center;
-}
-
-.solicitud-control {
-    margin-left: 20px;
-}
-
-.btn-eliminar-detalle {
-    padding: 5px 10px;
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.crear-orden-container {
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.seleccionar-productos-container {
-  margin-top: 20px;
-}
-
-.filtro-categoria {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.filtro-categoria label {
-  margin-right: 10px;
-  font-weight: bold;
-}
-
-.filtro-categoria select {
-  margin-right: 10px;
-  padding: 5px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.btn-filtrar-pedido {
-  padding: 5px 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.pedidos-container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.pedidos-disponibles, .solicitud-cotizacion-container {
-  flex: 1;
-  margin-right: 20px;
-}
-
-.pedidos-disponibles h3, .solicitud-cotizacion-container h3 {
-  margin-bottom: 20px;
-}
-
-.fila-cabecera {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  background-color: #007bff;
-  color: #fff;
-  padding: 10px;
-  border-radius: 4px;
-}
-
-.celda {
-  padding: 10px;
-}
-
-.producto-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fff;
-  border-bottom: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 4px;
-  margin-top: 10px;
-}
-
-.producto-info {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.celda-id, .celda-categoria, .celda-producto, .celda-cantidad {
-  flex: 1;
-  text-align: center;
-}
-
-.cantidad-button {
-  padding: 5px 10px;
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.solicitud-cotizacion-container {
-  padding: 20px;
-  background-color: #f1f1f1;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.detalle-solicitud-cotizacion {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background-color: #fff;
-  border-bottom: 1px solid #ccc;
-  border-radius: 4px;
-  margin-top: 10px;
-}
-
-.detalle-nombre-producto {
-  display: flex;
-  align-items: center;
-}
-
-.solicitud-control {
-  margin-left: 20px;
-}
-
-.btn-eliminar-detalle {
-  padding: 5px 10px;
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.crear-orden-container {
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.seleccionar-productos-container {
-  margin-top: 20px;
-}
-
-.filtro-categoria {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.filtro-categoria label {
-  margin-right: 10px;
-  font-weight: bold;
-}
-
-.filtro-categoria select {
-  margin-right: 10px;
-  padding: 5px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.btn-filtrar-pedido {
-  padding: 5px 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.pedidos-container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.pedidos-disponibles, .solicitud-cotizacion-container {
-  flex: 1;
-  margin-right: 20px;
-}
-
-.pedidos-disponibles h3, .solicitud-cotizacion-container h3 {
-  margin-bottom: 20px;
-}
-
-.fila-cabecera {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  background-color: #007bff;
-  color: #fff;
-  padding: 10px;
-  border-radius: 4px;
-}
-
-.celda {
-  padding: 10px;
-}
-
-.producto-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fff;
-  border-bottom: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 4px;
-  margin-top: 10px;
-}
-
-.producto-info {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.celda-id, .celda-categoria, .celda-producto, .celda-cantidad {
-  flex: 1;
-  text-align: center;
-}
-
-.cantidad-button {
-  padding: 5px 10px;
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.solicitud-cotizacion-container {
-  padding: 20px;
-  background-color: #f1f1f1;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.detalle-solicitud-cotizacion {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background-color: #fff;
-  border-bottom: 1px solid #ccc;
-  border-radius: 4px;
-  margin-top: 10px;
-}
-
-.detalle-nombre-producto {
-  display: flex;
-  align-items: center;
-}
-
-.solicitud-control {
-  margin-left: 20px;
-}
-
-.btn-eliminar-detalle {
-  padding: 5px 10px;
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.mensaje-error {
-  color: red;
-  font-size: 18px;
-  margin-top: 10px;
-}
-
-/* Estilos generales */
-.adquisidor-container {
-  font-family: Arial, sans-serif;
-  padding: 20px;
-}
-
-/* Estilos para la lista de pedidos */
-.producto-item {
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-  padding: 10px;
-  background-color: #f9f9f9;
-}
-
-.producto-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.celda {
-  padding: 5px;
-}
-
-.celda-id {
-  width: 100px;
-}
-
-.celda-categoria {
-  width: 150px;
-}
-
-.celda-producto {
-  flex: 1;
-}
-
-.celda-cantidad {
-  width: 100px;
-}
-
-.producto-control {
-  display: flex;
-  align-items: center;
-}
-
-.cantidad-button {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-/* Estilos para el mensaje de no hay pedidos disponibles */
-.no-pedidos {
-  margin-top: 20px;
-  color: #999;
 }
 
 /* Estilos para la tabla de detalles de cotización */
@@ -765,3 +326,369 @@ input[type="checkbox"] {
 .cantidad-button:hover {
   background-color: #0056b3;
 }
+
+/* Estilos para el menú lateral */
+.main-sidebar {
+  background-color: #f8f9fa; /* Color de fondo del sidebar */
+}
+
+.brand-link {
+  display: block;
+  padding: 10px 15px;
+  color: #ffffff;
+  text-align: center;
+  background-color: #17a2b8; /* Color de fondo del encabezado */
+}
+
+.brand-link .brand-text {
+  font-weight: 300; /* Grosor de la fuente del texto de la marca */
+}
+
+.user-panel .info {
+  padding: 10px 15px;
+  color: #495057; /* Color del texto del panel de usuario */
+}
+
+.nav-sidebar .nav-link {
+  padding: 10px 15px;
+  color: #495057; /* Color del texto de los enlaces del menú */
+  transition: background-color 0.3s; /* Transición suave del color de fondo */
+}
+
+.nav-sidebar .nav-link:hover {
+  background-color: #e9ecef; /* Color de fondo al pasar el mouse */
+}
+
+/* Estilos para los íconos */
+.nav-sidebar .nav-link .nav-icon {
+  margin-right: 10px; /* Margen derecho para separar los íconos del texto */
+}
+
+/* Estilos para los submenús */
+.nav-treeview {
+  display: none; /* Ocultar submenús por defecto */
+  background-color: #ffffff; /* Color de fondo de los submenús */
+}
+
+.nav-treeview .nav-item {
+  padding-left: 30px; /* Sangría izquierda para los elementos del submenú */
+}
+
+.nav-treeview .nav-link {
+  padding: 8px 15px; /* Espaciado interno de los enlaces del submenú */
+  color: #495057; /* Color del texto de los enlaces del submenú */
+}
+
+/* Mostrar submenús cuando el elemento padre está activo */
+.nav-item.active > .nav-treeview {
+  display: block;
+}
+
+/* Mensaje de error */
+.mensaje-error {
+  color: red;
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+/* Estilos para la tabla de pedidos */
+.tabla-pedidos,
+.tabla-solicitud {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.tabla-pedidos th,
+.tabla-pedidos td,
+.tabla-solicitud th,
+.tabla-solicitud td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.tabla-pedidos th,
+.tabla-solicitud th {
+  background-color: #f2f2f2;
+}
+
+.tabla-pedidos td button,
+.tabla-solicitud td button {
+  padding: 5px 10px;
+}
+
+/* Estilos para la lista de pedidos */
+.producto-item {
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.producto-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.celda {
+  padding: 5px;
+}
+
+.celda-id {
+  width: 100px;
+}
+
+.celda-categoria {
+  width: 150px;
+}
+
+.celda-producto {
+  flex: 1;
+}
+
+.celda-cantidad {
+  width: 100px;
+}
+
+.producto-control {
+  display: flex;
+  align-items: center;
+}
+
+.cantidad-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* Estilos para el mensaje de no hay pedidos disponibles */
+.no-pedidos {
+  margin-top: 20px;
+  color: #999;
+}
+
+/* Estilos para la tabla de detalles de cotización */
+.tabla-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.seleccionar-productos-container,
+.solicitud-cotizacion-container {
+  flex: 1;
+}
+
+.solicitud-cotizacion-container {
+  margin-left: 20px; /* Añade un margen a la derecha para separar visualmente */
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustes específicos para mejorar la separación visual */
+.seleccionar-productos-container {
+  margin-right: 20px; /* Añade un margen a la derecha para separar visualmente */
+}
+
+
+.orden-compra-item {
+  margin-top: 20px;
+}
+
+.filtro-categoria {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.filtro-categoria label {
+  margin-right: 10px;
+}
+
+.filtro-categoria select {
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.btn-filtrar-pedido {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.cotizacion {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.cotizacion-header {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  cursor: pointer;
+}
+
+.cotizacion-header p {
+  margin: 0;
+}
+
+.toolTip {
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 3px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.table-row:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.mensaje-vacio {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.btn-enviar-solicitud {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-enviar-solicitud:hover {
+  background-color: #218838;
+}
+
+.cotizacion-ep {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.cotizacion-ep h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.orden-compra-item {
+  margin-bottom: 20px;
+}
+
+
+.cabecera-orden-compra {
+  background-color: #e9ecef;
+  padding: 10px;
+  cursor: pointer;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.detalle-orden-compra {
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 5px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.blue {
+  background-color: #007bff;
+  color: white;
+}
+
+.yellow {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.text-area {
+  width: 100%;
+  height: 100px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  resize: vertical;
+}
+
+.btn {
+  padding: 5px 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 3px;
+}
+
+.btn-cancelar {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-actualizar-pedido {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-cancelar-pedido {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.btn-trash-icon-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

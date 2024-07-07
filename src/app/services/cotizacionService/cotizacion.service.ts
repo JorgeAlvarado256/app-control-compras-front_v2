@@ -16,9 +16,17 @@ export class CotizacionService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
   agregarCotizacion(cotizacion: Cotizacion): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/enviarSolicitudCotizacion`, cotizacion)
-      .pipe(catchError(this.handleError));
+    const url = `${this.apiUrl}/enviarSolicitudCotizacion`;
+    const token = this.authService.getToken(); // Obtener el token desde tu servicio de autenticación
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    console.log('Enviando datos de cotización al servidor:', cotizacion);
+
+    return this.http.post<any>(url, cotizacion, { headers }).pipe(
+      catchError(this.handleError)
+    );
   }
+
 
 
   obtenerCotizaciones(): Observable<Cotizacion[]> {

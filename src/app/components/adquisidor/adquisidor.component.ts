@@ -33,7 +33,6 @@ export class AdquisidorComponent implements OnInit {
   actualizarPedidoas: any[] = [];
   productos: Producto[] = [];
   usuario: any; // Asegúrate de definir el tipo correcto para el usuario
-  mostrarOrdenesDeCompra = false;
   mostrarCarga = true;
   eliminarHabilitado = false;
   fechaActual: any;
@@ -113,6 +112,9 @@ export class AdquisidorComponent implements OnInit {
   detallesSolicitudCotizacion: any[] = [];
   errorProductoAgregado = false;
   detallesCotizacion: DetalleCotizacion[] = []; // Asumiendo que tienes una propiedad así definida
+  mostrarOrdenesDeCompra: boolean = false;
+  codRolUsuario: number = 5; // Supongamos que el usuario actual es un solicitante
+
 
   constructor(
     public empresaService: EmpresaService,
@@ -135,7 +137,7 @@ export class AdquisidorComponent implements OnInit {
     if (navigationState && navigationState.usuario) {
       this.usuario = navigationState.usuario as Usuario;
       // this.listarOrdenesDeCompra(this.usuario.rut_usuario, this.usuario.cod_rol);
-      this.listarOrdenesDeCompra();
+      // this.listarOrdenesDeCompra();
     }
     this.solicitanteService.getDepartamento(this.usuario.id_departamento).subscribe({
       next: (data: { nom_departamento: any; }) => {
@@ -215,8 +217,6 @@ export class AdquisidorComponent implements OnInit {
     this.obtenerUsuarioAutenticado();
     this.listarProductosAprobadosParaCotizacion();
     this.cdr.detectChanges();
-    this.mostrarOrdenesDeCompra = true;
-
     
 
 
@@ -285,11 +285,11 @@ export class AdquisidorComponent implements OnInit {
   }
 
 
-  listarOrdenesDeCompra() {
+  listarOrdenesDeCompra(rutUsuario: string, codRol: number) {
     // Lógica para obtener las órdenes de compra
     // Utiliza el servicio adquisidorService para obtener los datos necesarios
-    if (this.usuario.cod_rol !== 6)
-      this.adquisidorService.getOrdenesDeCompra(this.usuario.rut_usuario).subscribe({
+    if (codRol !== 6) {
+      this.adquisidorService.getOrdenesDeCompra(rutUsuario).subscribe({
         next: (data) => {
           this.ordenesDeCompra = data.pedidos;
           this.ordenDeCompraInicial = data.pedidos;
@@ -301,7 +301,7 @@ export class AdquisidorComponent implements OnInit {
                 precio_unitario: detalle.precio_unitario,
                 cantidad_solicitada: detalle.precio_total_item / detalle.precio_unitario,
               };
-
+  
               this.detallesCompraIniciales.push(detalleResumido);
             });
           });
@@ -310,7 +310,9 @@ export class AdquisidorComponent implements OnInit {
           console.log("Error: " + error);
         }
       });
+    }
   }
+  
   buscarItem(idDetalle: number, propiedad: string): number {
     const detalleEncontrado = this.detallesCompraIniciales.find(detalle => detalle.id_orden_compra_detalle === idDetalle);
 
@@ -392,7 +394,7 @@ export class AdquisidorComponent implements OnInit {
         this.ordenCompraActual = [];
         this.calcularSumaTotal();
         this.listarProductosAprobados();
-        this.listarOrdenesDeCompra();
+        this.listarOrdenesDeCompra(this.usuario.rut_usuario, this.usuario.cod_rol);
         alert('Orden de Compra generada correctamente');
         this.opcionSeleccionada = 'TODOS';
         this.opcionEstadoSeleccionada = 'TODOS';
@@ -428,23 +430,35 @@ export class AdquisidorComponent implements OnInit {
     this.authService.isLogOut();
     this.router.navigate(['/login']);
   }
-  navOrdenesCompras() {
+
+navOrdenesCompras() {
+ 
     this.pestanaActiva = 'ordenesCompras';
-    this.mostrarOrdenesDeCompra = false;
+    this.mostrarOrdenesDeCompra= false;
+    this.listarOrdenesDeCompra(this.usuario.rut_usuario, this.usuario.cod_rol);
+    this.cdr.detectChanges(); // Forzar la detección de cambios
+
+
 }
+
 
 
   navCrearOrdenCompra() {
     console.log(this.listaPedidos);
     this.pestanaActiva = 'crearOrdenCompra';
+    this.cdr.detectChanges(); // Forzar la detección de cambios
+
   }
 
   navMisSolicitudes() {
     this.pestanaActiva = 'misSolicitudes';
+    this.cdr.detectChanges(); // Forzar la detección de cambios
+
   }
 
   navCrearSolicitudCotizacion() {
     this.pestanaActiva = 'crearSolicitudCotizacion';
+
   }
 
   filtrarPedidos() {
@@ -536,7 +550,7 @@ export class AdquisidorComponent implements OnInit {
     return detalle.precio_total_item / detalle.precio_unitario;
   }
   cancelar() {
-    this.listarOrdenesDeCompra();
+    this.listarOrdenesDeCompra(this.usuario.rut_usuario, this.usuario.cod_rol);
     this.eliminarHabilitado = false;
     this.eliminarDetallesCompra = [];
     this.editandoDetalle = false;
@@ -553,7 +567,7 @@ export class AdquisidorComponent implements OnInit {
       next: (data) => {
         console.log(data);
         alert('Ordenes de Compra actualizados correctamente');
-        this.listarOrdenesDeCompra();
+        this.listarOrdenesDeCompra(this.usuario.rut_usuario, this.usuario.cod_rol);
         this.mostrarCarga = false;
       },
       error: (error) => {
@@ -572,7 +586,7 @@ export class AdquisidorComponent implements OnInit {
       next: (data) => {
         console.log(data);
         alert('Recepción confirmada correctamente');
-        this.listarOrdenesDeCompra();
+        this.listarOrdenesDeCompra(this.usuario.rut_usuario, this.usuario.cod_rol);
         this.mostrarCarga = false;
       },
       error: (error) => {
@@ -587,7 +601,7 @@ export class AdquisidorComponent implements OnInit {
       next: (data) => {
         console.log(data);
         alert('Pedido eliminado correctamente');
-        this.listarOrdenesDeCompra();
+        this.listarOrdenesDeCompra(this.usuario.rut_usuario, this.usuario.cod_rol);
         this.mostrarCarga = false;
       },
       error: (error) => {
@@ -726,22 +740,27 @@ obtenerToolTip(estado: string): string {
     return Array.from(cotizacionesMap.values());
   }
   
-  obtenerCotizaciones() {
-    this.cotizacionService.obtenerCotizaciones().subscribe((cotizaciones: Cotizacion[]) => {
-      this.cotizacionesAgrupadas = cotizaciones;
-      // Iterar sobre cada cotización para asegurar que los detalles tengan el nombre del producto
-      this.cotizacionesAgrupadas.forEach((cotizacion) => {
-        cotizacion.detalles.forEach(async (detalle) => {
-          try {
-            // Acceder al nombre del producto a través de la relación 'producto'
-            await detalle.producto; // Asegúrate de que la relación 'producto' esté configurada correctamente
-          } catch (error) {
-            console.error('Error al obtener el nombre del producto:', error);
+  obtenerCotizaciones(): void {
+    this.cotizacionService.obtenerCotizaciones().subscribe(
+      (cotizaciones: Cotizacion[]) => {
+        this.cotizacionesAgrupadas = cotizaciones;
+        // Iterar sobre cada cotización para asegurar que los detalles tengan el nombre del producto
+        this.cotizacionesAgrupadas.forEach(async (cotizacion) => {
+          for (const detalle of cotizacion.detalles) {
+            try {
+              await detalle.producto; // Asegúrate de que la relación 'producto' esté configurada correctamente en tu servicio o modelo
+            } catch (error) {
+              console.error('Error al obtener el nombre del producto:', error);
+            }
           }
         });
-      });
-    });
+      },
+      (error) => {
+        console.error('Error al obtener cotizaciones:', error);
+      }
+    );
   }
+
   
   seleccionarCotizacion(cotizacion: Cotizacion): void {
     this.cotizacion = cotizacion;
@@ -764,69 +783,66 @@ listarProductosAprobadosParaCotizacion() {
 agregarPedidoASolicitud(pedido: any) {
   this.mostrarCarga = true; // Mostrar indicador de carga
 
-  if (!pedido) {
-    console.error('El pedido es undefined o null.');
-    return;
-  }
+  try {
+    // Verificar si el pedido es válido
+    if (!pedido) {
+      throw new Error('El pedido es undefined o null.');
+    }
 
-  if (!this.solicitudCotizacionActual || this.solicitudCotizacionActual.length === 0) {
-    this.solicitudCotizacionActual = [{
-      id_cotizacion: null,
-      rut_empresa: pedido.rut_empresa,
-      detalles: [],
-      fecha_emision: new Date(),
-      estado_seguimiento: 'PR',
-    }];
-  }
+    // Inicializar la solicitud de cotización si no existe
+    if (!this.solicitudCotizacionActual || this.solicitudCotizacionActual.length === 0) {
+      this.solicitudCotizacionActual = [{
+        id_cotizacion: null,
+        rut_empresa: pedido.rut_empresa,
+        detalles: [],
+        fecha_emision: new Date(),
+        estado_seguimiento: 'PR',
+      }];
+    }
 
-  // Verificar si el pedido ya está agregado
-  if (this.pedidoAgregado(pedido)) {
-    console.log('Este producto ya ha sido agregado');
-    return;
-  }
-
-  // Verificar si el ID del pedido es diferente al de los detalles existentes
-  if (this.solicitudCotizacionActual[0].detalles.length > 0) {
-    const idPedido = pedido.id_orden_pedido_cabecera_fk;
-    const idDetalleExistente = this.solicitudCotizacionActual[0].detalles[0].id_orden_pedido_cabecera_fk;
-
-    if (idDetalleExistente !== idPedido) {
-      alert('Advertencia: No puede agregar pedidos con diferentes ID de orden a la misma solicitud de cotización.');
-      this.mostrarCarga = false;
+    // Verificar si el pedido ya está agregado
+    if (this.pedidoAgregado(pedido)) {
+      console.log('Este producto ya ha sido agregado a la solicitud de cotización');
       return;
     }
+
+    // Verificar si el ID del pedido es diferente al de los detalles existentes
+    if (this.solicitudCotizacionActual[0].detalles.length > 0) {
+      const idPedido = pedido.id_orden_pedido_cabecera_fk;
+      const idDetalleExistente = this.solicitudCotizacionActual[0].detalles[0].id_orden_pedido_cabecera_fk;
+
+      if (idDetalleExistente !== idPedido) {
+        alert('Advertencia: No puede agregar pedidos con diferentes ID de orden a la misma solicitud de cotización.');
+        this.mostrarCarga = false;
+        return;
+      }
+    }
+
+    // Agregar el pedido a la solicitud de cotización
+    const detalle: DetalleCotizacion = {
+      id_producto: pedido.id_producto,
+      cantidad_solicitada: pedido.cantidad_solicitada,
+      nombre_producto: pedido.producto.nombre_producto,
+      cantidad_comprada: pedido.cantidad_comprada || null,
+      cantidad_recepcionada: pedido.cantidad_recepcionada || null,
+      estado_seguimiento_producto: 'PR',
+      id_orden_pedido_cabecera_fk: pedido.id_orden_pedido_cabecera_fk,
+      orden_compra_detalle_fk: pedido.orden_compra_detalle_fk || null,
+      id_proveedores: pedido.id_proveedores || null,
+      id_detalle_cotizacion: null,
+      id_cotizacion_fk: null
+    };
+
+    this.solicitudCotizacionActual[0].detalles.push(detalle);
+    this.mostrarCarga = false;
+
+    console.log('Pedido agregado a la solicitud de cotización:', pedido);
+    console.log('Estado actual de la solicitud de cotización:', JSON.stringify(this.solicitudCotizacionActual, null, 2));
+  } catch (error) {
+    console.error('Error al agregar pedido a la solicitud de cotización:', error);
+    this.mostrarCarga = false;
   }
-
-  // Agregar el pedido a la solicitud de cotización
-  const detalle: DetalleCotizacion = {
-    id_producto: pedido.id_producto,
-    cantidad_solicitada: pedido.cantidad_solicitada,
-    nombre_producto: pedido.producto.nombre_producto,
-    cantidad_comprada: pedido.cantidad_comprada,
-    cantidad_recepcionada: pedido.cantidad_recepcionada,
-    estado_seguimiento_producto: "PR",
-    id_orden_pedido_cabecera_fk: pedido.id_orden_pedido_cabecera_fk,
-    orden_compra_detalle_fk: pedido.orden_compra_detalle_fk,
-    id_proveedores: pedido.id_proveedores,
-    id_detalle_cotizacion: null,
-    id_cotizacion_fk: null
-  };
-
-  this.solicitudCotizacionActual[0].detalles.push(detalle);
-  this.mostrarCarga = false;
-
-  console.log('Pedido agregado a la solicitud de cotización:', pedido);
-    // Cambiar la pestaña activa a 'misSolicitudes'
-  console.log('Estado actual de la solicitud de cotización:', JSON.stringify(this.solicitudCotizacionActual, null, 2));
-
-
 }
-
-
-
-
-
-
 
 pedidoAgregadoEnSolicitud(pedido: any): boolean {
   if (!this.solicitudCotizacionActual || this.solicitudCotizacionActual.length === 0) {
@@ -870,14 +886,15 @@ pedidoAgregado(pedido: any): boolean {
 guardarSolicitudDeCotizacion() {
   this.cotizacionService.guardarSolicitudCotizacion(this.solicitudCotizacionActual[0]).subscribe({
     next: (response) => {
+      this.navMisSolicitudes();
+      alert('Solicitud de cotización guardada con éxito');
+      this.mostrarCarga = false; // Ocultar indicador de carga
+
       console.log('Solicitud de cotización guardada con éxito:', response);
     },
     error: (error) => {
       console.error('Error al guardar la solicitud de cotización:', error);
       console.log('Solicitud de Cotización Guardada:', this.solicitudCotizacionActual);
-      this.mostrarCarga = false; // Ocultar indicador de carga
-      this.pestanaActiva = 'misSolicitudes';
-
     }})};
 
     estaPedidoEnSolicitud(pedido: any): boolean {
@@ -993,9 +1010,6 @@ guardarSolicitudDeCotizacion() {
     // Aquí puedes implementar la lógica para generar y descargar el archivo
   }
 
-
-
-
   seleccionarProveedor(proveedor: any) {
     const index = this.proveedoresSeleccionados.findIndex((p: any) => p.id_proveedores === proveedor.id_proveedores);
     if (index === -1) {
@@ -1009,5 +1023,15 @@ guardarSolicitudDeCotizacion() {
     this.cotizacionSeleccionada = this.cotizacionesAgrupadas.map(() => false);
   }
 
+  subMenuActivo: string | null = null; // Inicializar como null para ningún submenú activo
+
+toggleSubMenu(menu: string) {
+  if (this.subMenuActivo === menu) {
+    this.subMenuActivo = ''; // Cierra el submenú si ya está abierto
+  } else {
+    this.subMenuActivo = menu; // Abre el submenú correspondiente
+  }
+  console.log('SubMenu Activo:', this.subMenuActivo); // Para verificar en la consola
+}
   
 }
