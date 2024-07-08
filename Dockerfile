@@ -13,7 +13,7 @@ RUN npm install --quiet
 COPY . .
 
 # Build the Angular app in production mode
-RUN npm build
+RUN npm run build
 
 # Stage 2: Serve the Angular app with nginx
 FROM nginx:1.21.4-alpine
@@ -32,3 +32,4 @@ EXPOSE 80
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
+
