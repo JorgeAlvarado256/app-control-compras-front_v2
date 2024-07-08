@@ -9,7 +9,7 @@ COPY . .
 
 # Instalar dependencias y construir la aplicación Angular en modo producción
 RUN npm install
-RUN RUN ng build --prod
+RUN npm build
 
 # Stage 2: Servir la aplicación Angular con nginx
 FROM nginx:1.21.4-alpine
