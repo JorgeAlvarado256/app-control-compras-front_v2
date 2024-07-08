@@ -3,33 +3,28 @@ FROM node:16.3.0-alpine AS build
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copiar archivos de configuración de Angular
 COPY package.json package-lock.json ./
-
-# Install dependencies
-RUN npm install --quiet
-
-# Copy the rest of the application
 COPY . .
 
-# Build the Angular app in production mode
+# Instalar dependencias y construir la aplicación Angular en modo producción
+RUN npm install
 RUN npm run build --prod
 
-# Stage 2: Serve the Angular app with nginx
+# Stage 2: Servir la aplicación Angular con nginx
 FROM nginx:1.21.4-alpine
 
-# Remove default nginx website
+# Eliminar el sitio web por defecto de NGINX
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy the built Angular app from the build stage
+# Copiar la aplicación Angular construida desde la etapa de construcción
 COPY --from=build /app/dist/app-control-compras /usr/share/nginx/html
 
-# Copy nginx configuration file
+# Copiar el archivo de configuración de NGINX
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
+# Exponer el puerto 80
 EXPOSE 80
 
-# Start nginx
+# Iniciar NGINX
 CMD ["nginx", "-g", "daemon off;"]
-
