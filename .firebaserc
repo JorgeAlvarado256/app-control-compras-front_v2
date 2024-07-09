@@ -1,9 +1,5 @@
 {
   "projects": {
-    "default": "control-compras-front",
-    "development": "control-compras-front-e8fe7"
-  },
-  "targets": {},
-  "etags": {},
-  "dataconnectEmulatorConfig": {}
+    "default": "control-compras-front"
+  }
 }
