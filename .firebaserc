@@ -1,7 +1,8 @@
 {
   "projects": {
     "default": "control-compras-front",
-    "developer": "control-compras-front-v2"
+    "developer": "control-compras-front-v2",
+    "develop v2": "control-compras-front-v2"
   },
   "targets": {},
   "etags": {},
