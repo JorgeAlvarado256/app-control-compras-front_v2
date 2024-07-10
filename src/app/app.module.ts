@@ -24,6 +24,7 @@ import { JefaturaComponent } from './components/jefaturaComponent/jefatura.compo
 import { AdquisidorComponent } from './components/adquisidor/adquisidor.component';
 import { IndicatorCardComponent } from './components/indicadores/indicator-card.component';
 import { GerenciaComponent } from './components/gerencia/gerencia.component';
+import { Sub_jefaturaComponent } from './components/sub_jefaturaComponent/Sub_jefatura.component';
 import { AppRoutingModule } from './app-routing.module';
 import { CotizacionService } from './services/cotizacionService/cotizacion.service';
 
@@ -42,7 +43,7 @@ defineLocale('es', esLocale); // Importa el idioma español para las fechas
     AdquisidorComponent,
     IndicatorCardComponent,
     GerenciaComponent,
-
+    Sub_jefaturaComponent,
   ],
   imports: [
     BrowserModule,

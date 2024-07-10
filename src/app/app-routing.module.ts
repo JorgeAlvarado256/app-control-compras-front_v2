@@ -5,6 +5,7 @@ import { SolicitanteComponent } from './components/solicitanteComponent/solicita
 import { LoginComponent } from './components/loginComponent/login.component';
 import { ProductoComponent } from './components/productoComponent/producto.component';
 import {JefaturaComponent} from './components/jefaturaComponent/jefatura.component';
+import {Sub_jefaturaComponent} from './components/sub_jefaturaComponent/Sub_jefatura.component';
 import { AdquisidorComponent} from './components/adquisidor/adquisidor.component';
 import {GerenciaComponent} from './components/gerencia/gerencia.component';
 
@@ -23,6 +24,9 @@ const routes: Routes = [
   { path: 'adquisidor', component: AdquisidorComponent, 
     canActivate: [AuthGuard]  
   }, // Ruta para operador
+  { path: 'sub_jefatura', component: Sub_jefaturaComponent, 
+    canActivate: [AuthGuard] 
+  }, // Ruta para jefatura
   { path: 'jefatura', component: JefaturaComponent, 
     canActivate: [AuthGuard] 
   }, // Ruta para jefatura

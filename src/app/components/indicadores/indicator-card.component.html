@@ -1,59 +1,38 @@
-<nav class="navbar">
-  <div class="navbar-brand">
-    <!-- Logo u otro elemento de marca -->
+<div class="btn-group" role="group">
+  <button *ngIf="codRolUsuario === 4" class="btn btn-outline-primary"
+          [ngClass]="{'active': mostrarMisSolicitudes}"
+          (click)="toggleMostrarMisSolicitudes()">
+    Mis Solicitudes
+  </button>
+  <button *ngIf="codRolUsuario === 4" class="btn btn-outline-primary"
+          [ngClass]="{'active': mostrarSolicitudesRecibidas}"
+          (click)="toggleMostrarSolicitudesRecibidas()">
+    Solicitudes Recibidas
+  </button>
+</div>
+
+<div class="kpi-navbar">
+  <div *ngIf="mostrarMisSolicitudes" class="kpi-section">
+    <div class="kpi-cards">
+      <ng-container *ngFor="let estado of estadosSolicitantes">
+        <div class="kpi-card small" (click)="seleccionarKPI(estado.codigo)">
+          <img [src]="estado.icono" [alt]="estado.titulo">
+          <div class="kpi-title">{{ estado.titulo }}</div>
+          <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
+        </div>
+      </ng-container>
+    </div>
   </div>
 
-  <!-- Contenedor de indicadores KPI -->
-  <div class="kpi-navbar">
-    <ng-container *ngIf="codRolUsuario === 3">
-      <div class="kpi-cards">
-        <app-kpi-card 
-          *ngFor="let estado of estadosSolicitantes" 
-          [estado]="estado"
-          [total]="contarPedidosPorEstado(estado.codigo)"
-          (click)="seleccionarKPI(estado.codigo)">
-        </app-kpi-card>
-      </div>
-    </ng-container>
-
-    <!-- <ng-container *ngIf="codRolUsuario === 4">
-      <div class="kpi-cards">
-        <app-kpi-card 
-          *ngFor="let estado of estadosRecibidos" 
-          [estado]="estado"
-          [total]="contarPedidosPorEstado(estado.codigo)"
-          (click)="seleccionarKPI(estado.codigo)">
-        </app-kpi-card>
-      </div>
-    </ng-container> -->
-
-    <ng-container *ngIf="codRolUsuario === 4">
-      <div class="kpi-cards">
-        <app-kpi-card 
-          *ngFor="let estado of estadosSolicitantes" 
-          [estado]="estado"
-          [total]="contarPedidosPorEstado(estado.codigo)"
-          (click)="seleccionarKPI(estado.codigo)">
-        </app-kpi-card>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="codRolUsuario === 5">
-      <div class="kpi-cards">
-        <app-kpi-card
-          [estado]="{codigo: 'TODOS', titulo: 'Cotizaciones', icono: 'https://img.icons8.com/?size=50&id=NKRM4VSa2hw2&format=png&color=000000'}"
-          [total]="misCotizaciones.length"
-          (click)="seleccionarKPI('TODOS')">
-        </app-kpi-card>
-        <app-kpi-card
-          [estado]="{codigo: 'PENR', titulo: 'Órdenes de Compra', icono: 'https://img.icons8.com/?size=50&id=NKRM4VSa2hw2&format=png&color=000000'}"
-          [total]="misOrdenesCompra.length"
-          (click)="seleccionarKPI('PENR')">
-        </app-kpi-card>
-      </div>
-    </ng-container>
+  <div *ngIf="mostrarSolicitudesRecibidas" class="kpi-section">
+    <div class="kpi-cards">
+      <ng-container *ngFor="let estado of estadosRecibidos">
+        <div class="kpi-card small" (click)="seleccionarKPI(estado.codigo)">
+          <img [src]="estado.icono" [alt]="estado.titulo">
+          <div class="kpi-title">{{ estado.titulo }}</div>
+          <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
+        </div>
+      </ng-container>
+    </div>
   </div>
-
-  <!-- Otros elementos del navbar como perfil, configuración, etc. -->
-</nav>
-<app-pantalla-carga *ngIf="mostrarCarga"></app-pantalla-carga>
+</div>

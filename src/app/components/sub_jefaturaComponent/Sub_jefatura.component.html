@@ -57,27 +57,35 @@
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Opciones</h3>
+                                </div>
                                 <div class="card-body">
                                     <div class="btn-group" role="group">
-                                        <button *ngIf="codRolUsuario === 7" class="btn btn-outline-primary"
-                                            (click)="mostrarMisSolicitudesRecibidas()">
-                                            Solicitudes Recibidas de departamentos
-                                        </button>                                       
+                                        <button *ngIf="codRolUsuario === 4" class="btn btn-outline-primary"
+                                            (click)="mostrarMisSolicitudesClick()">
+                                            Solicitudes
+                                        </button>
+                                        <button class="btn btn-outline-primary"
+                                            (click)="mostrarCategoriasProductos = !mostrarCategoriasProductos">
+                                            Categorías y Productos
+                                        </button>
+                                        <button class="btn btn-outline-primary" (click)="mostrarResumen = !mostrarResumen">
+                                            Resumen
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-
-                    <!-- Sección de Pedidos Recibidos -->
-                    <div *ngIf="mostrarSolicitudesRecibidas && codRolUsuario === 4" class="row">
+                    <!-- Sección de KPIs para solicitudes recibidas -->
+                    <div *ngIf="mostrarMisSolicitudes && codRolUsuario === 4" class="row">
                         <div class="col-md-12">
-                            <app-indicator-card [codRolUsuario]="codRolUsuario" [misPedidos]="PedidosRecibidos"
-                                [mostrarSolicitudesRecibidas]="true" (kpiSeleccionado)="filtrarPedidosPorKPI($event)">
+                            <app-indicator-card [codRolUsuario]="codRolUsuario" [misPedidos]="misPedidos"
+                                [mostrarMisSolicitudes]="true" (kpiSeleccionado)="filtrarPedidosPorKPI($event)">
                             </app-indicator-card>
                         </div>
-
                         <div *ngIf="mostrarPedidos" class="row">
                             <!-- Columna izquierda: Tabla de Pedidos -->
                             <div class="col-lg-6 mb-4">
@@ -203,6 +211,108 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Sección de Pedidos Recibidos -->
+                    <div *ngIf="mostrarSolicitudesRecibidas && codRolUsuario === 4" class="row">
+                        <div class="col-md-12">
+                            <app-indicator-card [codRolUsuario]="codRolUsuario" [misPedidos]="PedidosRecibidos"
+                                [mostrarSolicitudesRecibidas]="true" (kpiSeleccionado)="filtrarPedidosPorKPI($event)">
+                            </app-indicator-card>
+                        </div>
+                    </div>
+
+                    <!-- Sección de categorías y productos -->
+                    <div *ngIf="mostrarCategoriasProductos" class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Categorías</h3>
+                                </div>
+                                <div class="card-body">
+                                    <nav>
+                                        <div *ngFor="let categoria of categoriasProductos">
+                                            <a [ngClass]="{'categoria-activa': categoria.id_categoria_productos == categoriaActiva}"
+                                                (click)="verProductos(categoria.id_categoria_productos)"
+                                                class="link-button">
+                                                <span class="codigo">{{ categoria.id_categoria_productos }}</span> -
+                                                {{ categoria.nombre_categoria }}
+                                                <span *ngIf="hayProductosSeleccionados(categoria.id_categoria_productos)"
+                                                    class="check-mark">&#10004;</span>
+                                            </a>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Productos</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div *ngFor="let producto of productosPorCategoria" class="producto-item">
+                                        <div class="producto-info">
+                                            <span>{{ producto.nombre_producto }}</span>
+                                        </div>
+                                        <div class="producto-controls">
+                                            <button (click)="agregarProducto(producto)" class="cantidad-button">+</button>
+                                            <input type="number" [(ngModel)]="producto.cantidad" class="cantidad-input"
+                                                [value]="producto.cantidad" (input)="actualizarSeleccion(producto)"
+                                                min="0">
+                                            <button (click)="quitarProducto(producto)" class="cantidad-button">-</button>
+                                            <button (click)="eliminarCantidadSeleccionada(producto)"
+                                                class="eliminar-button">Eliminar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen de productos seleccionados -->
+                    <div *ngIf="mostrarResumen" class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Resumen Productos Seleccionados</h3>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Producto</th>
+                                                <th>Cantidad</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let producto of productosSeleccionados">
+                                                <td>{{ producto.nombre_producto }}</td>
+                                                <td>{{ producto.cantidad }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="resumen-btn">
+                                        <button class="btn btn-success" (click)="confirmarPedido()">Confirmar Pedido</button>
+                                        <button class="btn btn-secondary" (click)="volver()">Volver</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de navegación -->
+                    <div *ngIf="mostrarCategoriasProductos" class="row">
+                        <div class="col-12 text-center">
+                            <button *ngIf="productosSeleccionados && productosPorCategoria.length > 0"
+                                [disabled]="productosPorCategoria.length === 0" (click)="generarPedido()"
+                                class="btn btn-primary">
+                                Generar Pedido
+                            </button>
+                        </div>
+                    </div>
+
+
+
                     <!-- Templates adicionales -->
                     <ng-template #noCategoriaSeleccionada>
                         <h1 class="no-categoria-seleccionada text-center">Seleccione una categoría</h1>
