@@ -6,13 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de Pedidos</title>
     <link rel="stylesheet" href="https://adminlte.io/themes/v3/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="./jefatura.component.scss">
-
-    <!-- Estilos CSS personalizados o adicionales -->
-    <style>
-        /* Estilos personalizados pueden ser incluidos aquí si es necesario */
-    </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -50,82 +44,136 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-
             <section class="content">
                 <div class="container-fluid">
                     <!-- Sección de filtros y botones -->
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Opciones</h3>
+                                </div>
                                 <div class="card-body">
                                     <div class="btn-group" role="group">
-                                        <button *ngIf="codRolUsuario === 7" class="btn btn-outline-primary"
-                                            (click)="mostrarMisSolicitudesRecibidas()">
-                                            Solicitudes Recibidas de departamentos
-                                        </button>                                       
+                                        <nav *ngIf="codRolUsuario === 4" class="nav nav-pills">
+                                            <a class="nav-link" [class.active]="mostrarSolicitudesRecibidas"
+                                                (click)="mostrarSolicitudesRecibidasClick()">
+                                                Solicitudes
+                                            </a>
+                                        </nav>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-
-                    <!-- Sección de Pedidos Recibidos -->
-                    <div *ngIf="mostrarSolicitudesRecibidas && codRolUsuario === 4" class="row">
+                    <!-- Sección de KPIs -->
+                    <div *ngIf="mostrarSolicitudesRecibidas && codRolUsuario === 4" class="row mb-3">
                         <div class="col-md-12">
                             <app-indicator-card [codRolUsuario]="codRolUsuario" [misPedidos]="PedidosRecibidos"
                                 [mostrarSolicitudesRecibidas]="true" (kpiSeleccionado)="filtrarPedidosPorKPI($event)">
                             </app-indicator-card>
                         </div>
+                    </div>
 
-                        <div *ngIf="mostrarPedidos" class="row">
-                            <!-- Columna izquierda: Tabla de Pedidos -->
-                            <div class="col-lg-6 mb-4">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Pedidos</h3>
-                                    </div>
-                                    <div class="card-body-mostrarPedido">
-                                        <table *ngIf="mostrarTablaPedidos" class="table-pedido">
+                    <!-- Sección de Pedidos Recibidos -->
+                    <div *ngIf="mostrarPedidos" class="row">
+                        <!-- Columna izquierda: Tabla de Pedidos -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Pedidos</h3>
+                                </div>
+                                <div class="card-body">
+                                    <table *ngIf="mostrarTablaPedidos" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Pedido N°</th>
+                                                <th>Fecha de emisión</th>
+                                                <th>Estado de seguimiento</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let pedido of misPedidosFiltrados"
+                                                [ngClass]="{'categoria-activa': pedidoSeleccionado?.id_orden_pedido_cabecera === pedido.id_orden_pedido_cabecera}">
+                                                <td>{{ pedido.id_orden_pedido_cabecera }}</td>
+                                                <td>{{ pedido.fecha_emision }}</td>
+                                                <td>
+                                                    <span [pTooltip]="obtenerToolTip(pedido.estado_seguimiento)">
+                                                        {{ obtenerToolTip(pedido.estado_seguimiento) }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex flex-column">
+                                                        <button *ngIf="pedido.estado_seguimiento === 'PENR' && tarjetaRevisar !== pedido.id_orden_pedido_cabecera"
+                                                            class="btn btn-revisar btn-azul mb-2" (click)="revisarPedido($event, pedido)">
+                                                            Revisar
+                                                        </button>
+                                                        <button *ngIf="pedido.estado_seguimiento === 'REVJ'"
+                                                            class="btn btn-aprobar btn-verde mb-2" (click)="aprobarPedido($event, pedido)">
+                                                            Aprobar
+                                                        </button>
+                                                        <button *ngIf="pedido.estado_seguimiento === 'REVJ'"
+                                                            class="btn btn-rechazar btn-rojo mb-2" (click)="rechazarPedido($event, pedido)">
+                                                            Rechazar
+                                                        </button>
+                                                        <button *ngIf="pedido.estado_seguimiento === 'REVJ'"
+                                                            class="btn btn-cancelar btn-azul mb-2"
+                                                            (click)="cancelarRevisionPedido($event, pedido); cancelar()">
+                                                            Cancelar
+                                                        </button>
+                                                        <button class="btn btn-primary btn-sm" (click)="toggleDetallePedido(pedido)">
+                                                            {{ pedidoSeleccionado && pedidoSeleccionado.id_orden_pedido_cabecera === pedido.id_orden_pedido_cabecera ? 'Ocultar Detalles' : 'Mostrar Detalles' }}
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna derecha: Detalles del Pedido -->
+                        <div class="col-lg-6" *ngIf="pedidoSeleccionado">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Detalles del Pedido</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th>Pedido N°</th>
-                                                    <th>Fecha de emisión</th>
-                                                    <th>Estado de seguimiento</th>
+                                                    <th>Producto</th>
+                                                    <th>Cantidad Solicitada</th>
                                                     <th>Acciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr *ngFor="let pedido of misPedidosFiltrados"
-                                                    [ngClass]="{'categoria-activa': pedidoSeleccionado?.id_orden_pedido_cabecera === pedido.id_orden_pedido_cabecera}">
-                                                    <td>{{ pedido.id_orden_pedido_cabecera }}</td>
-                                                    <td>{{ pedido.fecha_emision }}</td>
+                                                <tr *ngFor="let detalle of pedidoSeleccionado.detalles" class="detalle-pedido">
+                                                    <td>{{ detalle.producto?.nombre_producto }}</td>
                                                     <td>
-                                                        <span [pTooltip]="obtenerToolTip(pedido.estado_seguimiento)">
-                                                            {{ obtenerToolTip(pedido.estado_seguimiento) }}
-                                                        </span>
+                                                        <ng-container *ngIf="!editandoDetalle">
+                                                            {{ detalle.cantidad_solicitada }}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="editandoDetalle">
+                                                            <input *ngIf="editandoDetalle" type="number" class="form-control"
+                                                                [disabled]="detalleEnListaEliminar(detalle)" [(ngModel)]="detalle.cantidad_solicitada">
+                                                        </ng-container>
                                                     </td>
                                                     <td>
-                                                        <div class="d-flex flex-column">
-                                                            <button *ngIf="pedido.estado_seguimiento === 'PENR' && tarjetaRevisar !== pedido.id_orden_pedido_cabecera"
-                                                                class="btn btn-revisar btn-azul mb-2" (click)="revisarPedido($event, pedido)">
-                                                                Revisar
+                                                        <div class="detalle-pedido-icons">
+                                                            <button *ngIf="pedidoSeleccionado.estado_seguimiento === 'PENR'"
+                                                                class="btn btn-sm btn-danger" (click)="habilitarEliminar(detalle)"
+                                                                [disabled]="!eliminarHabilitado">
+                                                                <i class="fas fa-trash-alt"></i> Eliminar
                                                             </button>
-                                                            <button *ngIf="pedido.estado_seguimiento === 'REVJ'"
-                                                                class="btn btn-aprobar btn-verde mb-2" (click)="aprobarPedido($event, pedido)">
-                                                                Aprobar
-                                                            </button>
-                                                            <button *ngIf="pedido.estado_seguimiento === 'REVJ'"
-                                                                class="btn btn-rechazar btn-rojo mb-2" (click)="rechazarPedido($event, pedido)">
-                                                                Rechazar
-                                                            </button>
-                                                            <button *ngIf="pedido.estado_seguimiento === 'REVJ'"
-                                                                class="btn btn-cancelar btn-azul mb-2"
-                                                                (click)="cancelarRevisionPedido($event, pedido); cancelar()">
-                                                                Cancelar
-                                                            </button>
-                                                            <button class="btn btn-primary btn-sm" (click)="toggleDetallePedido(pedido)">
-                                                                {{ pedidoSeleccionado && pedidoSeleccionado.id_orden_pedido_cabecera === pedido.id_orden_pedido_cabecera ? 'Ocultar Detalles' : 'Mostrar Detalles' }}
+                                                            <button *ngIf="pedidoSeleccionado.estado_seguimiento === 'PENR'"
+                                                                class="btn btn-sm btn-primary ml-2"
+                                                                (click)="habilitarEdicion(pedidoSeleccionado.estado_seguimiento, pedidoSeleccionado.detalles)">
+                                                                <i class="fas fa-pencil-alt"></i> Editar
                                                             </button>
                                                         </div>
                                                     </td>
@@ -133,81 +181,28 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
-                            </div>
-    
-                            <!-- Columna derecha: Detalles del Pedido -->
-                            <div class="col-lg-6" *ngIf="pedidoSeleccionado">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Detalles del Pedido</h3>
+
+                                    <div class="mb-3">
+                                        <label for="observaciones" class="form-label">Observaciones:</label>
+                                        <textarea id="observaciones" class="form-control" rows="3"
+                                            [(ngModel)]="pedidoSeleccionado.observaciones_jefe_area" [disabled]="true"></textarea>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Producto</th>
-                                                        <th>Cantidad Solicitada</th>
-                                                        <th>Acciones</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr *ngFor="let detalle of pedidoSeleccionado.detalles" class="detalle-pedido">
-                                                        <td>{{ detalle.producto?.nombre_producto }}</td>
-                                                        <td>
-                                                            <ng-container *ngIf="!editandoDetalle">
-                                                                {{ detalle.cantidad_solicitada }}
-                                                            </ng-container>
-                                                            <ng-container *ngIf="editandoDetalle">
-                                                                <input *ngIf="editandoDetalle" type="number" class="form-control"
-                                                                    [disabled]="detalleEnListaEliminar(detalle)" [(ngModel)]="detalle.cantidad_solicitada">
-                                                            </ng-container>
-                                                        </td>
-                                                        <td>
-                                                            <div class="detalle-pedido-icons">
-                                                                <button *ngIf="pedidoSeleccionado.estado_seguimiento === 'PENR'"
-                                                                    class="btn btn-sm btn-danger" (click)="habilitarEliminar(detalle)"
-                                                                    [disabled]="!eliminarHabilitado">
-                                                                    <i class="fas fa-trash-alt"></i> Eliminar
-                                                                </button>
-                                                                <button *ngIf="pedidoSeleccionado.estado_seguimiento === 'PENR'"
-                                                                    class="btn btn-sm btn-primary ml-2"
-                                                                    (click)="habilitarEdicion(pedidoSeleccionado.estado_seguimiento, pedidoSeleccionado.detalles)">
-                                                                    <i class="fas fa-pencil-alt"></i> Editar
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-    
-                                        <div class="mb-3">
-                                            <label for="observaciones" class="form-label">Observaciones:</label>
-                                            <textarea id="observaciones" class="form-control" rows="3"
-                                                [(ngModel)]="pedidoSeleccionado.observaciones_jefe_area" [disabled]="true"></textarea>
-                                        </div>
-    
-                                        <div class="d-flex justify-content-end">
-                                            <button [disabled]="pedidoSeleccionado.estado_seguimiento !== 'PENR'" class="btn btn-danger mr-2"
-                                                (click)="cancelar()">Cancelar</button>
-                                            <button [disabled]="pedidoSeleccionado.estado_seguimiento !== 'PENR' || !eliminarHabilitado"
-                                                class="btn btn-primary mr-2" (click)="actualizarPedido(pedidoSeleccionado)">Actualizar
-                                                Pedido</button>
-                                            <button [disabled]="pedidoSeleccionado.estado_seguimiento !== 'PENR'" class="btn btn-warning"
-                                                (click)="anularPedido(pedidoSeleccionado.id_orden_pedido_cabecera)">Anular Pedido</button>
-                                        </div>
+
+                                    <div class="d-flex justify-content-end">
+                                        <button [disabled]="pedidoSeleccionado.estado_seguimiento !== 'PENR'" class="btn btn-danger mr-2"
+                                            (click)="cancelar()">Cancelar</button>
+                                        <button [disabled]="pedidoSeleccionado.estado_seguimiento !== 'PENR' || !eliminarHabilitado"
+                                            class="btn btn-primary mr-2" (click)="actualizarPedido(pedidoSeleccionado)">Actualizar
+                                            Pedido</button>
+                                        <button [disabled]="pedidoSeleccionado.estado_seguimiento !== 'PENR'" class="btn btn-warning"
+                                            (click)="anularPedido(pedidoSeleccionado.id_orden_pedido_cabecera)">Anular Pedido</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Templates adicionales -->
-                    <ng-template #noCategoriaSeleccionada>
-                        <h1 class="no-categoria-seleccionada text-center">Seleccione una categoría</h1>
-                    </ng-template>
 
+                    <!-- Mensaje cuando no hay solicitudes -->
                     <ng-template #sinSolicitudes>
                         <h1 class="no-categoria-seleccionada text-center">No hay solicitudes creadas</h1>
                     </ng-template>
@@ -218,11 +213,6 @@
     <script src="https://adminlte.io/themes/v3/plugins/jquery/jquery.min.js"></script>
     <script src="https://adminlte.io/themes/v3/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://adminlte.io/themes/v3/dist/js/adminlte.min.js"></script>
-
-    <!-- Scripts adicionales pueden ser incluidos aquí si es necesario -->
-    <script>
-        // Scripts personalizados pueden ser incluidos aquí si es necesario
-    </script>
 </body>
 
 <!-- Componente de pantalla de carga -->

@@ -70,6 +70,9 @@ function getModuloRol(cod_rol: number): string {
     case 4:
       // Código para el rol JEFATURA
       return '/jefatura';
+    case 7:
+      // Código para el rol Encargado
+      return '/encargado';
     case 5:
       // Código para el rol ADQUISIDOR
       return '/adquisidor';

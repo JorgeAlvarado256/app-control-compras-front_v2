@@ -38,4 +38,5 @@ export class PedidoDetalleService {
     const params = { pedidoDetalle, pedidoCabecera };
     return this.http.post(this.apiUrl+this.actualizarPedidoDetalleJefatura, params);
   }
+  
 }

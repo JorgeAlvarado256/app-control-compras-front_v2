@@ -41,6 +41,8 @@ export class JefaturaComponent extends SolicitanteComponent implements OnInit {
   override mostrarSolicitudesRecibidas: boolean = false;
   override mostrarIndicatorCard: boolean = true;
   detallesVisibles: boolean = false; 
+  mostrarSolicitudes: boolean = false;
+
   
   @ViewChild(IndicatorCardComponent) override indicatorCardComponent!: IndicatorCardComponent;
 
@@ -75,6 +77,7 @@ export class JefaturaComponent extends SolicitanteComponent implements OnInit {
     super.ngOnInit();
     this.listarMisPedidos(this.usuario.rut_usuario, this.usuario.cod_rol);
     this.mostrarBotonRevisar = true;
+    
   }
 
   override ngAfterViewInit() {
@@ -101,6 +104,7 @@ export class JefaturaComponent extends SolicitanteComponent implements OnInit {
     this.mostrarCategoriasProductos = false; // Mostrar las categorías de productos
 
   }
+
 
 
 
@@ -214,14 +218,14 @@ export class JefaturaComponent extends SolicitanteComponent implements OnInit {
   }
 
   mostrarMisSolicitudesClick(): void {
-    this.mostrarMisSolicitudes = !this.mostrarMisSolicitudes;
-    this.mostrarSolicitudesRecibidas = false;
+    this.mostrarSolicitudesRecibidas = !this.mostrarSolicitudesRecibidas;
 }
 
 mostrarSolicitudesRecibidasClick(): void {
     this.mostrarSolicitudesRecibidas = !this.mostrarSolicitudesRecibidas;
     this.mostrarMisSolicitudes = false;
 }
+
   override toggleDetallePedido(pedido: any) { // Ajusta el tipo de 'pedido' según tu estructura
   if (this.pedidoSeleccionado && this.pedidoSeleccionado.id_orden_pedido_cabecera === pedido.id_orden_pedido_cabecera) {
     this.pedidoSeleccionado = null; // Deseleccionar si ya está seleccionado

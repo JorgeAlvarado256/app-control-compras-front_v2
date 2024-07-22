@@ -1,98 +1,81 @@
-.kpi-navbar {
+.btn-group {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
+  justify-content: space-around;
+  margin-bottom: 16px;
+}
+
+.btn {
+  flex: 1;
+  margin: 0 4px;
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  color: #007bff;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn:hover {
+  background-color: #e9ecef;
+}
+
+.kpi-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .kpi-section {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  background-color: #f8f9fa; /* Fondo del área de los KPI */
-  padding: 10px; /* Añade padding si es necesario */
+  flex-direction: column;
 }
 
 .kpi-cards {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 16px;
 }
 
 .kpi-card {
-  /* Estilos base de las tarjetas de KPI */
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 10px;
-  margin: 10px;
-  border-radius: 8px;
-  background-color: #f0f0f0;
-  cursor: pointer; /* Cursor de manito al pasar por encima */
-  transition: background-color 0.3s ease;
-}
-
-.kpi-card:hover {
-  background-color: #e0e0e0; /* Color de fondo al pasar el cursor */
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  width: calc(50% - 16px); // Ajusta el tamaño de las tarjetas
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .kpi-card img {
-  width: 50px; /* Ancho de las imágenes de los KPIs */
-  height: 50px; /* Altura de las imágenes de los KPIs */
+  max-width: 24px;
+  margin-right: 12px;
+}
+
+.kpi-info {
+  display: flex;
+  flex-direction: column;
 }
 
 .kpi-title {
-  font-size: 14px; /* Tamaño de fuente del título del KPI */
-  margin-top: 5px;
-}
-
-.kpi-value {
-  font-size: 18px; /* Tamaño de fuente del valor del KPI */
   font-weight: bold;
 }
 
-.kpi-selector {
-  /* Estilos específicos para el selector de KPIs */
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-items: center;
-  padding: 10px;
+.kpi-value {
+  font-size: 1.1rem;
+  color: #333;
 }
 
-.kpi {
-  /* Estilos de cada KPI individual */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 10px;
-  cursor: pointer; /* Cursor de manito al pasar por encima */
-}
-
-.kpi img {
-  width: 50px; /* Ancho de las imágenes de los KPIs */
-  height: 50px; /* Altura de las imágenes de los KPIs */
-}
-
-.kpi p {
-  font-size: 14px; /* Tamaño de fuente del título del KPI */
-  margin-top: 5px;
-}
-
-/* Estilos específicos para tarjetas de KPIs de estados recibidos */
-.kpi-card.pendientes {
-  background-color: #ffcccb; /* Color de fondo para estado pendiente */
-}
-
-.kpi-card.aprobados {
-  background-color: #cdebad; /* Color de fondo para estado aprobado */
-}
-
-.kpi-card.rechazados {
-  background-color: #ffd966; /* Color de fondo para estado rechazado */
-}
-
-.kpi-card.revision {
-  background-color: #d1ecf1; /* Color de fondo para estado en revisión */
+.kpi-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
 }

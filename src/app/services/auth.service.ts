@@ -77,6 +77,23 @@ export class AuthService {
     localStorage.removeItem(this.tokenKey);
   }
 
+  get codigoRol(): number {
+    const usuario = this.getUsuario();
+    return usuario ? usuario.cod_rol : 0;
+  }
+
+  private getUsuario(): Usuario | null {
+    const rut_usuario = this.getUsuario();
+    if (!rut_usuario) {
+      return null;
+    }
+    // Implementa la lógica para obtener el usuario desde algún servicio o almacenamiento
+    // Aquí puedes usar el método getCurrentUsuario si lo deseas
+    // return this.getCurrentUsuario().pipe(tap(usuario => usuario)).subscribe();
+    // Como simplificación, se devuelve null si el usuario no está en almacenamiento
+    return null; 
+  }
+
   
 }
 

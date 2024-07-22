@@ -1,113 +1,95 @@
 import { AfterViewInit, Component, EventEmitter, Input, Output, ChangeDetectorRef, OnInit } from '@angular/core';
-
+import {IndicadoresService} from '../../services/indicadores/indicadores.service'
+import { Usuario } from 'src/app/interfaces/usuarioInterface';
 @Component({
   selector: 'app-indicator-card',
-  template: `
-    <div class="btn-group" role="group">
-      <button *ngIf="codRolUsuario === 4" class="btn btn-outline-primary"
-              [ngClass]="{'active': mostrarMisSolicitudes}"
-              (click)="mostrarMisSolicitudesClick()">
-        Mis Solicitudes
-      </button>
-      <button *ngIf="codRolUsuario === 4" class="btn btn-outline-primary"
-              [ngClass]="{'active': mostrarSolicitudesRecibidas}"
-              (click)="mostrarSolicitudesRecibidasClick()">
-        Solicitudes Recibidas
-      </button>
-    </div>
-
-    <div class="kpi-navbar">
-      <div *ngIf="codRolUsuario === 3 && mostrarMisSolicitudes" class="kpi-section">
-        <div class="kpi-cards">
-          <ng-container *ngFor="let estado of estadosSolicitantes">
-            <div class="kpi-card small" (click)="seleccionarKPI(estado.codigo)">
-              <img [src]="estado.icono" [alt]="estado.titulo">
-              <div class="kpi-title">{{ estado.titulo }}</div>
-              <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-
-      <div *ngIf="codRolUsuario === 4 && mostrarMisSolicitudes" class="kpi-section">
-        <div class="kpi-cards">
-          <ng-container *ngFor="let estado of estadosSolicitantes">
-            <div class="kpi-card small" (click)="seleccionarKPI(estado.codigo)">
-              <img [src]="estado.icono" [alt]="estado.titulo">
-              <div class="kpi-title">{{ estado.titulo }}</div>
-              <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-
-      <div *ngIf="codRolUsuario === 4 && mostrarSolicitudesRecibidas" class="kpi-section">
-        <div class="kpi-cards">
-          <ng-container *ngFor="let estado of estadosRecibidos">
-            <div class="kpi-card small" (click)="seleccionarKPI(estado.codigo)">
-              <img [src]="estado.icono" [alt]="estado.titulo">
-              <div class="kpi-title">{{ estado.titulo }}</div>
-              <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-
-      <div *ngIf="codRolUsuario === 5" class="kpi-section">
-        <div class="kpi-cards">
-          <div class="kpi-card small" (click)="seleccionarKPI('COTIZACIONES')">
-            <img src="https://img.icons8.com/ios-glyphs/96/000000/in-transit.png" alt="Icono">
-            <div class="kpi-title">Cotizaciones</div>
-            <div class="kpi-value">{{ misCotizaciones.length }}</div>
-          </div>
-
-          <div class="kpi-card small" (click)="seleccionarKPI('ORDENES_COMPRA')">
-            <img src="https://img.icons8.com/ios-glyphs/96/000000/in-transit.png" alt="Icono">
-            <div class="kpi-title">Órdenes de Compra</div>
-            <div class="kpi-value">{{ misOrdenesCompra.length }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
+  templateUrl: './indicator-card.component.html',
   styleUrls: ['./indicator-card.component.scss']
 })
 export class IndicatorCardComponent implements OnInit, AfterViewInit {
-  @Input() esOrdenesCompra = false;
-  @Input() mostrarMisSolicitudes = false;
   @Input() mostrarSolicitudesRecibidas = false;
+  @Input() mostrarMisSolicitudes = false;
+  @Input() mostrarEncargados = false;
+  @Input() mostrarJefatura = false;
   @Input() misPedidos: any[] = [];
   @Input() misOrdenesCompra: any[] = [];
   @Input() misCotizaciones: any[] = [];
-  @Input() codRolUsuario: number | undefined;
   @Input() PedidosRecibidos: any[] = [];
   @Input() misPedidosRealizados: any[] = [];
+  @Input() codRolUsuario: number | undefined;
   @Output() kpiSeleccionado = new EventEmitter<string>();
   @Input() pestanaActiva = '';
+  @Input() usuario: Usuario | undefined; // Permitir que usuario sea undefined
+
   mostrarCarga = true;
   mostrarResumen: boolean = false;
   mostrarCategoriasProductos: boolean = false;
-  mostrarPedidos: boolean = false; // Variable para controlar la visibilidad de la sección de pedidos
 
   estadosSolicitantes = [
-    { codigo: 'PENR', titulo: 'Mis Órdenes de Pedido Pendientes', icono: 'https://img.icons8.com/ios-glyphs/96/000000/in-transit.png', clase: 'pendientes' },
-    { codigo: 'APRC', titulo: 'Mis Órdenes de Pedido Aprobados', icono: 'https://img.icons8.com/ios-glyphs/96/000000/approval.png', clase: 'aprobados' },
-    { codigo: 'RECJ', titulo: 'Mis Órdenes de Pedido Rechazados', icono: 'https://img.icons8.com/ios-glyphs/96/000000/high-importance.png', clase: 'rechazados' },
-    { codigo: 'REVJ', titulo: 'Mis Órdenes de Pedido En Revisión', icono: 'https://img.icons8.com/ios-glyphs/96/000000/edit-property.png', clase: 'revision' }
-  ];
-  estadosRecibidos = [
-    { codigo: 'PENR', titulo: 'Órdenes de Pedido Pendientes Recibidos', icono: 'https://img.icons8.com/ios-glyphs/96/000000/in-transit.png', clase: 'pendientes' },
-    { codigo: 'APRC', titulo: 'Órdenes de Pedido Aprobados Recibidos', icono: 'https://img.icons8.com/ios-glyphs/96/000000/approval.png', clase: 'aprobados' },
-    { codigo: 'RECJ', titulo: 'Órdenes de Pedido Rechazados Recibidos', icono: 'https://img.icons8.com/ios-glyphs/96/000000/high-importance.png', clase: 'rechazados' },
-    { codigo: 'REVJ', titulo: 'Órdenes de Pedido En Revisión Recibidos', icono: 'https://img.icons8.com/ios-glyphs/96/000000/edit-property.png', clase: 'revision' }
+    { codigo: 'PENR', titulo: 'Órdenes de Pedido Pendientes', icono: 'https://img.icons8.com/ios-glyphs/96/000000/in-transit.png', clase: 'pendientes' },
+    { codigo: 'APRC', titulo: 'Órdenes de Pedido Aprobados', icono: 'https://img.icons8.com/ios-glyphs/96/000000/approval.png', clase: 'aprobados' },
+    { codigo: 'RECJ', titulo: 'Órdenes de Pedido Rechazados', icono: 'https://img.icons8.com/ios-glyphs/96/000000/high-importance.png', clase: 'rechazados' },
+    { codigo: 'REVJ', titulo: 'Órdenes de Pedido En Revisión', icono: 'https://img.icons8.com/ios-glyphs/96/000000/edit-property.png', clase: 'revision' }
   ];
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {}
+  estadosEncargados = [
+    { codigo: 'PENR', titulo: 'Órdenes de Pedido Pendientes Encargado', icono: 'https://img.icons8.com/ios-glyphs/96/000000/in-transit.png', clase: 'pendientes' },
+    { codigo: 'APRC', titulo: 'Órdenes de Pedido Aprobados Encargado', icono: 'https://img.icons8.com/ios-glyphs/96/000000/approval.png', clase: 'aprobados' },
+    { codigo: 'RECJ', titulo: 'Órdenes de Pedido Rechazados Encargado', icono: 'https://img.icons8.com/ios-glyphs/96/000000/high-importance.png', clase: 'rechazados' },
+    { codigo: 'REVJ', titulo: 'Órdenes de Pedido En Revisión Encargado', icono: 'https://img.icons8.com/ios-glyphs/96/000000/edit-property.png', clase: 'revision' }
+  ];
+
+  estadosJefatura = [
+    { codigo: 'PENR', titulo: 'Órdenes de Pedido Pendientes Jefatura', icono: 'https://img.icons8.com/ios-glyphs/96/000000/in-transit.png', clase: 'pendientes' },
+    { codigo: 'APRC', titulo: 'Órdenes de Pedido Aprobados Jefatura', icono: 'https://img.icons8.com/ios-glyphs/96/000000/approval.png', clase: 'aprobados' },
+    { codigo: 'RECJ', titulo: 'Órdenes de Pedido Rechazados Jefatura', icono: 'https://img.icons8.com/ios-glyphs/96/000000/high-importance.png', clase: 'rechazados' },
+    { codigo: 'REVJ', titulo: 'Órdenes de Pedido En Revisión Jefatura', icono: 'https://img.icons8.com/ios-glyphs/96/000000/edit-property.png', clase: 'revision' }
+  ];
+
+  constructor(private changeDetectorRef: ChangeDetectorRef, private indicadoresService:IndicadoresService) {}
 
   ngOnInit(): void {
-    this.filtrarPedidos();
+    if (this.usuario) { // Verificar si usuario está definido
+      this.filtrarPedidos();
+      this.getKPIsSolicitante(this.usuario.rut_usuario);
+      this.obtenerKPIsEncargado(this.usuario.rut_usuario);
+    } else {
+      console.warn('El usuario no está definido en ngOnInit');
+    }
   }
 
+
+  getKPIsSolicitante(rut_usuario?: string) {
+    if (rut_usuario) {
+      this.indicadoresService.getKPIsSolicitante(rut_usuario).subscribe(
+        (data: any) => {
+          console.log(data);
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    } else {
+      console.warn('rut_usuario no está definido');
+    }
+  }
+  
+  obtenerKPIsEncargado(rutUsuario?: string): void {
+    if (rutUsuario) {
+      this.indicadoresService.getKPIsEncargado(rutUsuario).subscribe(
+        (response) => {
+          console.log(response);
+        },
+        (error) => {
+          console.error('Error al obtener KPIs del encargado:', error);
+        }
+      );
+    } else {
+      console.warn('rutUsuario no está definido');
+    }
+  }
+  
+  
   ngAfterViewInit(): void {
     this.changeDetectorRef.detectChanges();
   }
@@ -120,6 +102,8 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     this.mostrarCarga = true;
     this.mostrarMisSolicitudes = !this.mostrarMisSolicitudes;
     this.mostrarSolicitudesRecibidas = false;
+    this.mostrarEncargados = false;
+    this.mostrarJefatura = false;
     this.mostrarCarga = false;
   }
 
@@ -127,86 +111,76 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     this.mostrarCarga = true;
     this.mostrarSolicitudesRecibidas = !this.mostrarSolicitudesRecibidas;
     this.mostrarMisSolicitudes = false;
+    this.mostrarEncargados = false;
+    this.mostrarJefatura = false;
+    this.mostrarCarga = false;
+  }
+
+  mostrarEncargadosClick(): void {
+    this.mostrarCarga = true;
+    this.mostrarEncargados = !this.mostrarEncargados;
+    this.mostrarMisSolicitudes = false;
+    this.mostrarSolicitudesRecibidas = false;
+    this.mostrarJefatura = false;
+    this.mostrarCarga = false;
+  }
+
+  mostrarJefaturaClick(): void {
+    this.mostrarCarga = true;
+    this.mostrarJefatura = !this.mostrarJefatura;
+    this.mostrarMisSolicitudes = false;
+    this.mostrarSolicitudesRecibidas = false;
+    this.mostrarEncargados = false;
     this.mostrarCarga = false;
   }
 
   contarPedidosPorEstado(estado: string): number {
-    if (estado === 'PENR') {
-      if (this.mostrarMisSolicitudes) {
-        return this.misPedidos.filter(pedido => pedido.estado_seguimiento === estado).length;
-      } else if (this.mostrarSolicitudesRecibidas) {
-        return this.PedidosRecibidos.filter(pedido => pedido.estado_seguimiento === estado).length;
-      }
-    } else if (estado === 'APRC') {
-      if (this.mostrarMisSolicitudes) {
-        return this.misPedidos.filter(pedido => pedido.estado_seguimiento === estado).length;
-      } else if (this.mostrarSolicitudesRecibidas) {
-        return this.PedidosRecibidos.filter(pedido => pedido.estado_seguimiento === estado).length;
-      }
-    } else if (estado === 'RECJ') {
-      if (this.mostrarMisSolicitudes) {
-        return this.misPedidos.filter(pedido => pedido.estado_seguimiento === estado).length;
-      } else if (this.mostrarSolicitudesRecibidas) {
-        return this.PedidosRecibidos.filter(pedido => pedido.estado_seguimiento === estado).length;
-      }
-    } else if (estado === 'REVJ') {
-      if (this.mostrarMisSolicitudes) {
-        return this.misPedidos.filter(pedido => pedido.estado_seguimiento === estado).length;
-      } else if (this.mostrarSolicitudesRecibidas) {
-        return this.PedidosRecibidos.filter(pedido => pedido.estado_seguimiento === estado).length;
-      }
-    }
-    return 0;
-  }
+    let pedidosFiltrados = [];
 
-  // contarPedidosPorEstado(estado: string): number {
-  //   let count = 0;
-  
-  //   try {
-  //     console.log('Estado:', estado);
-  //     console.log('Mostrar Mis Solicitudes:', this.mostrarMisSolicitudes);
-  //     console.log('Mostrar Solicitudes Recibidas:', this.mostrarSolicitudesRecibidas);
-  //     console.log('CodRolUsuario:', this.codRolUsuario);
-  
-  //     if (this.mostrarMisSolicitudes) {
-  //       console.log('Filtrando mis pedidos...');
-  //       count = this.misPedidos.filter(pedido => pedido.estado_seguimiento === estado).length;
-  //     } else if (this.mostrarSolicitudesRecibidas && this.codRolUsuario === 4) {
-  //       console.log('Filtrando pedidos recibidos para rol 4...');
-  //       count = this.PedidosRecibidos.filter(pedido => pedido.codRolUsuario === 4 && pedido.estado_seguimiento === estado).length;
-  //     } else {
-  //       console.log('Mostrando pedidos recibidos para otros roles o sin filtro de rol...');
-  //       count = this.PedidosRecibidos.filter(pedido => pedido.estado_seguimiento === estado).length;
-  //     }
-  
-  //     console.log('Cantidad de pedidos:', count);
-  //   } catch (error) {
-  //     console.error('Error al contar pedidos por estado:', error);
-  //   }
-  
-  //   return count;
-  // }
-  
-  
-  
-  
-  
-  
+    if (this.mostrarMisSolicitudes) {
+      pedidosFiltrados = this.misPedidos;
+    } else if (this.mostrarSolicitudesRecibidas) {
+      pedidosFiltrados = this.PedidosRecibidos;
+    } else if (this.mostrarEncargados) {
+      pedidosFiltrados = this.misPedidos; // Asumimos que el encargado usa la misma lista de pedidos
+    } else if (this.mostrarJefatura) {
+      pedidosFiltrados = this.misPedidos; // Asumimos que la jefatura usa la misma lista de pedidos
+    }
+
+    return pedidosFiltrados.filter(pedido => pedido.estado_seguimiento === estado).length;
+  }
 
   toggleMostrarMisSolicitudes(): void {
     this.mostrarCarga = false;
     this.mostrarMisSolicitudes = !this.mostrarMisSolicitudes;
     this.mostrarSolicitudesRecibidas = false;
-    this.mostrarCarga = false;
-    this.mostrarPedidos = false;
-
+    this.mostrarEncargados = false;
+    this.mostrarJefatura = false;
+  
   }
 
   toggleMostrarSolicitudesRecibidas(): void {
     this.mostrarCarga = false;
     this.mostrarSolicitudesRecibidas = !this.mostrarSolicitudesRecibidas;
     this.mostrarMisSolicitudes = false;
+    this.mostrarEncargados = false;
+    this.mostrarJefatura = false;
+  }
+
+  toggleMostrarEncargados(): void {
     this.mostrarCarga = false;
+    this.mostrarEncargados = !this.mostrarEncargados;
+    this.mostrarMisSolicitudes = false;
+    this.mostrarSolicitudesRecibidas = false;
+    this.mostrarJefatura = false;
+  }
+
+  toggleMostrarJefatura(): void {
+    this.mostrarCarga = false;
+    this.mostrarJefatura = !this.mostrarJefatura;
+    this.mostrarMisSolicitudes = false;
+    this.mostrarSolicitudesRecibidas = false;
+    this.mostrarEncargados = false;
   }
 
   toggleMostrarCategoriasProductos(): void {
@@ -228,16 +202,31 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
   }
 
   filtrarPedidos(): void {
-    if (this.codRolUsuario === 3 || this.codRolUsuario === 4) {
+    if (this.codRolUsuario === 3) {
       this.mostrarMisSolicitudes = true;
       this.mostrarSolicitudesRecibidas = false;
+      this.mostrarEncargados = false;
+      this.mostrarJefatura = false;
     } else if (this.codRolUsuario === 4) {
-      this.mostrarSolicitudesRecibidas = true;
       this.mostrarMisSolicitudes = true;
+      this.mostrarSolicitudesRecibidas = true;
+      this.mostrarEncargados = false;
+      this.mostrarJefatura = false;
+    } else if (this.codRolUsuario === 5) {
+      this.mostrarMisSolicitudes = false;
+      this.mostrarSolicitudesRecibidas = false;
+      this.mostrarEncargados = true;
+      this.mostrarJefatura = false;
+    } else if (this.codRolUsuario === 6) {
+      this.mostrarMisSolicitudes = false;
+      this.mostrarSolicitudesRecibidas = false;
+      this.mostrarEncargados = false;
+      this.mostrarJefatura = true;
     } else {
       this.mostrarMisSolicitudes = false;
       this.mostrarSolicitudesRecibidas = false;
+      this.mostrarEncargados = false;
+      this.mostrarJefatura = false;
     }
   }
-
 }

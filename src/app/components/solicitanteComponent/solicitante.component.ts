@@ -167,17 +167,16 @@ export class SolicitanteComponent implements AfterViewInit  {
   }
   
 
-  
-  ngAfterViewInit() {
-    if (this.mostrarIndicatorCard) {
+  ngAfterViewInit(): void {
+    if (this.indicatorCardComponent) {
       this.indicatorCardComponent.kpiSeleccionado.subscribe((kpi: string) => {
         this.filtrarPedidosPorKPI(kpi);
-        this.filtrarPedidosJefe(kpi);
       });
     } else {
       console.error('IndicatorCardComponent no está definido.');
     }
   }
+  
   
   
   obtenerToolTip(estado: string):string{
@@ -281,6 +280,7 @@ cerrarDetallesPedido() {
       });
     }
   }
+  
   
 
   listarProductos(){
@@ -446,24 +446,45 @@ cerrarDetallesPedido() {
     }
   }
 
-  confirmarPedido(){
-    this.mostrarCarga=true;
+  confirmarPedido() {
+    this.mostrarCarga = true;
+  
+    let estadoSeguimiento: string;
+    let observacionesSolicitante: string | null = null;
+    let observacionesJefeArea: string | null = null;
+  
+    // Verificar el rol del usuario y asignar el estado de seguimiento correspondiente
+    if (this.usuario.cod_rol === 3) { // Solicitante
+      estadoSeguimiento = 'PENR'; // Pedido pendiente de revisión por encargados
+      observacionesSolicitante = 'Observaciones del solicitante'; // Ajusta según lo necesario
+    } else if (this.usuario.cod_rol === 7) { // Encargado
+      estadoSeguimiento = 'PENRC'; // Pedido pendiente de revisión por jefatura
+      observacionesJefeArea = 'Observaciones del encargado'; // Ajusta según lo necesario
+    } else {
+      console.error('Rol de usuario no reconocido');
+      this.mostrarCarga = false;
+      return;
+    }
+  
+    // Preparar los datos para el pedido
     this.datosCabecera = {
       id_orden_pedido_cabecera: 0,
       rut_empresa: this.empresa.rut_empresa,
       rut_usuario: this.usuario.rut_usuario,
       fecha_emision: new Date(),
-      estado_seguimiento: 'PENR',
-      rut_autoriza: null,
-      hora_fecha_autoriza: null,
-      observaciones_solicitante: null,
-      observaciones_jefe_area: null,
+      estado_seguimiento: estadoSeguimiento,
+      rut_autoriza: null, // Esto puede cambiar si el rol requiere autorización
+      hora_fecha_autoriza: null, // Esto puede cambiar si el rol requiere autorización
+      observaciones_solicitante: observacionesSolicitante,
+      observaciones_jefe_area: observacionesJefeArea,
       pedidoDetalle: this.agregarDetalle(),
     }
+  
+    // Enviar el pedido al servicio
     this.pedidoDetalleService.generarPedidoDetalle(this.datosCabecera).subscribe({
-      next: (data)=>{
+      next: (data) => {
         this.pedidosDetalleUsuario = data as PedidoDetalle[];
-        alert("Orden de pedido generada exitósamente");
+        alert("Orden de pedido generada exitosamente");
         this.productosSeleccionados = [];
         this.productosPorCategoria = [];
         this.navMisPedidosSolicitantes();
@@ -473,12 +494,15 @@ cerrarDetallesPedido() {
         this.categoriaActiva = "";
         this.mostrarCarga = false;
       },
-      error:(error)=>{
-        console.log("error al insertar los detalles. Error: ", error);
-        alert("error al insertar los detalles. Error: " + error);
+      error: (error) => {
+        console.log("Error al insertar los detalles. Error: ", error);
+        alert("Error al insertar los detalles. Error: " + error);
+        this.mostrarCarga = false;
       }
     });
   }
+  
+  
 
   agregarDetalle():PedidoDetalle[]{
     const pedidoDetalles: PedidoDetalle[] = [];

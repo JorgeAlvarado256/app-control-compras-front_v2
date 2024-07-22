@@ -23,4 +23,8 @@ export class SolicitanteService {
     const idDepartamentoParam = { id_departamento };
     return this.http.post<any>(this.apiUrl+this.obtenerDepartamento, idDepartamentoParam);
   }
+
+  obtenerSolicitudesRecibidas(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/solicitudesRecibidas`);
+  }
 }

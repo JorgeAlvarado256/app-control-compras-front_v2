@@ -29,4 +29,8 @@ export class EstadoPedidoService {
   aprobarCompra(datosParams: any){
     return this.http.post(this.apiUrl+this.rutaaprobarCompra, datosParams);
   }
+
+  actualizarEstadoPedidoSub_Jefatura(id_orden_pedido_cabecera: number, estado_seguimiento: string): Observable<any> {
+    return this.actualizarEstadoPedido(id_orden_pedido_cabecera, estado_seguimiento);
+  }
 }

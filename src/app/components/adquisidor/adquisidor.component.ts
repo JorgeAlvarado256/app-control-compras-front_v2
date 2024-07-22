@@ -114,6 +114,7 @@ export class AdquisidorComponent implements OnInit {
   detallesCotizacion: DetalleCotizacion[] = []; // Asumiendo que tienes una propiedad así definida
   mostrarOrdenesDeCompra: boolean = false;
   codRolUsuario: number = 5; // Supongamos que el usuario actual es un solicitante
+  todosPedidos!: Cotizacion[];
 
 
   constructor(
@@ -136,15 +137,19 @@ export class AdquisidorComponent implements OnInit {
     const navigationState = window.history.state;
     if (navigationState && navigationState.usuario) {
       this.usuario = navigationState.usuario as Usuario;
-      // this.listarOrdenesDeCompra(this.usuario.rut_usuario, this.usuario.cod_rol);
-      // this.listarOrdenesDeCompra();
     }
+
     this.solicitanteService.getDepartamento(this.usuario.id_departamento).subscribe({
       next: (data: { nom_departamento: any; }) => {
         this.nombreDepartamento = data.nom_departamento;
         this.mostrarCarga = false;
+      },
+      error: (error) => {
+        console.error('Error al obtener departamento', error);
+        this.mostrarCarga = false;
       }
     });
+
     this.empresaService.getEmpresa(this.usuario.rut_empresa).subscribe({
       next: (data) => {
         if (data) {
@@ -156,10 +161,11 @@ export class AdquisidorComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al obtener datos de la Empresa', error);
-        alert('Error al obtener datos de la Empresa:' + error)
+        alert('Error al obtener datos de la Empresa:' + error);
         this.mostrarCarga = false;
-      },
+      }
     });
+
     this.solicitanteService.getCategorias(this.usuario.rut_empresa).subscribe({
       next: (data) => {
         this.opcionesEstado = data.map(item => item.nombre_categoria);
@@ -169,6 +175,7 @@ export class AdquisidorComponent implements OnInit {
         alert('Error al listar categorías:' + error);
       }
     });
+
     this.estadoPedidoService.obtenerEstadoPedido().subscribe({
       next: (data) => {
         this.listaEstadosPedido = data;
@@ -176,53 +183,59 @@ export class AdquisidorComponent implements OnInit {
         this.toolTipEstado = this.listaEstadosPedido.map(item => item.descripcion_estado);
         this.mostrarCarga = false;
       },
-
       error: (error) => {
         console.error('Error al listar estados', error);
-        alert('Error al listar estados:' + error)
+        alert('Error al listar estados:' + error);
         this.mostrarCarga = false;
       }
     });
-    this.cotizacionService.obtenerCotizaciones().subscribe(
+
+    this.cotizacionService.obtenerCotizaciones('completo').subscribe(
       (cotizaciones: Cotizacion[]) => {
-        // Inicializa expanded en false para todas las cotizaciones
         cotizaciones.forEach(cotizacion => cotizacion.expanded = false);
         this.cotizaciones = cotizaciones;
+        this.mostrarCarga = false;
       },
       (error) => {
         console.error('Error al obtener las cotizaciones:', error);
+        this.mostrarCarga = false;
       }
     );
-    
-
 
     this.listarProductosAprobados();
     this.pestanaActiva = "ordenesCompras";
     this.opcionSeleccionada = 'TODOS';
     this.opcionEstadoSeleccionada = 'TODOS';
     this.opcionSeleccionadaProveedor = 'Seleccione un proveedor';
-    //this.listarOrdenesDeCompra();
     this.listarProductosAprobadosParaCotizacion();
-    this.obtenerCotizaciones();
+    this.obtenerCotizaciones('completo'); 
     this.cargarProveedores();
     this.inicializarCotizacionSeleccionada();
     if (this.cotizacionSeleccionada !== null) {
-      // Acceder a las propiedades de this.cotizacionSeleccionada aquí de forma segura
-      console.log(this.cotizacionSeleccionada); // Error: Property 'id_cotizacion' does not exist on type 'boolean[]'
+      console.log(this.cotizacionSeleccionada);
     } else {
-      // Manejar el caso donde this.cotizacionSeleccionada es null
       console.error('this.cotizacionSeleccionada es null');
     }
-    
+
     this.obtenerUsuarioAutenticado();
     this.listarProductosAprobadosParaCotizacion();
     this.cdr.detectChanges();
-    
-
-
-
+    this.cargarPedidosNoRegistrados();
   }
 
+
+
+  cargarPedidosNoRegistrados() {
+    // Lógica para cargar pedidos no registrados desde tu servicio
+    this.cotizacionService.obtenerPedidosNoRegistrados().subscribe(
+      (pedidos: any[]) => {
+        this.misPedidosFiltrados = pedidos;
+      },
+      error => {
+        console.error('Error al cargar pedidos no registrados:', error);
+      }
+    );
+  }
   obtenerUsuarioAutenticado(): void {
     // Llama al método del servicio para obtener el usuario autenticado
     this.authService.getCurrentUsuario().subscribe(
@@ -461,6 +474,52 @@ navOrdenesCompras() {
 
   }
 
+  pedidoAgregado(pedido: any): boolean {
+    this.mostrarCarga = true;
+  
+    // Verifica si solicitudCotizacionActual es una lista válida y tiene elementos
+    if (!this.solicitudCotizacionActual || this.solicitudCotizacionActual.length === 0) {
+      this.mostrarCarga = false;
+      return false; // No hay detalles para verificar
+    }
+  
+    // Comprobar si el pedido está en los detalles de la solicitud de cotización
+    const agregado = this.solicitudCotizacionActual[0].detalles.some((detalle: any) => detalle.id_producto === pedido.id_producto);
+  
+    this.mostrarCarga = false;
+    return agregado;
+  }
+  
+  agregarCotizacionDetalle(): DetalleCotizacion[] {
+    const cotizacionDetalles: DetalleCotizacion[] = []; // Renombrar el array para evitar conflicto
+  
+    this.solicitudCotizacionActual.forEach((detalle) => {
+      const detalleCotizacion: DetalleCotizacion = { // Renombrar el objeto para evitar conflicto
+        id_detalle_cotizacion: null, // Asigna valores por defecto o maneja adecuadamente
+        id_cotizacion_fk: null,
+        id_producto: detalle.pedido.id_producto,
+        nombre_producto: detalle.pedido.nombre_producto, // Asignar propiedad faltante
+        cantidad_solicitada: detalle.pedido.cantidad_solicitada, // Asignar propiedad faltante
+        cantidad_comprada: 0, // Valor por defecto o manejar adecuadamente
+        cantidad_recepcionada: 0, // Valor por defecto o manejar adecuadamente
+        estado_seguimiento_producto: '', // Valor por defecto o manejar adecuadamente
+        id_orden_pedido_cabecera_fk: detalle.pedido.id_orden_pedido_cabecera_fk,
+        orden_compra_detalle_fk: 0, // Valor por defecto o manejar adecuadamente
+        id_proveedores: detalle.pedido.id_proveedores,
+        producto: detalle.pedido.producto, // Si existe
+        archivo_pdf: detalle.pedido.archivo_pdf, // Si existe
+        rut_empresa: this.empresa.rut_empresa,
+        id_orden_compra_cabecera_fk: detalle.pedido.id_orden_compra_cabecera_fk,
+        id_orden_pedido_detalle: detalle.pedido.id_orden_pedido_detalle
+      };
+      
+      cotizacionDetalles.push(detalleCotizacion); // Agregar el objeto al array
+    });
+  
+    return cotizacionDetalles;
+  }
+
+  
   filtrarPedidos() {
     // const fechaDesde = new Date(this.fechaDesde);
     // const fechaHasta = new Date(this.fechaHasta);
@@ -665,6 +724,7 @@ obtenerToolTip(estado: string): string {
     this.listaPedidosParaCotizacion = this.listaPedidosParaCotizacion.filter(pedido => !this.pedidosAgregados.has(this.generarClavePedido(pedido)));
   }
   
+  
 
   mostrarBtnAgregarCotizacion(pedido: any): boolean {
     if (pedido && pedido.id_orden_pedido_cabecera_fk) {
@@ -740,19 +800,20 @@ obtenerToolTip(estado: string): string {
     return Array.from(cotizacionesMap.values());
   }
   
-  obtenerCotizaciones(): void {
-    this.cotizacionService.obtenerCotizaciones().subscribe(
+  obtenerCotizaciones(nivelDetalle: 'completo' | 'conDetalles' | 'pedidosCotizados'): void {
+    this.cotizacionService.obtenerCotizaciones(nivelDetalle).subscribe(
       (cotizaciones: Cotizacion[]) => {
         this.cotizacionesAgrupadas = cotizaciones;
         // Iterar sobre cada cotización para asegurar que los detalles tengan el nombre del producto
-        this.cotizacionesAgrupadas.forEach(async (cotizacion) => {
-          for (const detalle of cotizacion.detalles) {
-            try {
-              await detalle.producto; // Asegúrate de que la relación 'producto' esté configurada correctamente en tu servicio o modelo
-            } catch (error) {
-              console.error('Error al obtener el nombre del producto:', error);
+        this.cotizacionesAgrupadas.forEach(cotizacion => {
+          cotizacion.detalles.forEach(detalle => {
+            if (detalle.producto) {
+              // Aquí puedes realizar cualquier procesamiento adicional si es necesario
+              console.log('Producto:', detalle.producto.nombre_producto);
+            } else {
+              console.error('Producto no disponible para el detalle:', detalle);
             }
-          }
+          });
         });
       },
       (error) => {
@@ -760,6 +821,7 @@ obtenerToolTip(estado: string): string {
       }
     );
   }
+  
 
   
   seleccionarCotizacion(cotizacion: Cotizacion): void {
@@ -793,44 +855,48 @@ agregarPedidoASolicitud(pedido: any) {
     if (!this.solicitudCotizacionActual || this.solicitudCotizacionActual.length === 0) {
       this.solicitudCotizacionActual = [{
         id_cotizacion: null,
-        rut_empresa: pedido.rut_empresa,
+        rut_empresa: pedido.rut_empresa, // Inicializar con el rut_empresa del primer pedido
         detalles: [],
         fecha_emision: new Date(),
         estado_seguimiento: 'PR',
       }];
     }
 
-    // Verificar si el pedido ya está agregado
-    if (this.pedidoAgregado(pedido)) {
+    // Verificar si el producto ya está agregado
+    if (this.productoAgregadoEnSolicitud(pedido)) {
       console.log('Este producto ya ha sido agregado a la solicitud de cotización');
       return;
     }
 
     // Verificar si el ID del pedido es diferente al de los detalles existentes
-    if (this.solicitudCotizacionActual[0].detalles.length > 0) {
-      const idPedido = pedido.id_orden_pedido_cabecera_fk;
-      const idDetalleExistente = this.solicitudCotizacionActual[0].detalles[0].id_orden_pedido_cabecera_fk;
-
-      if (idDetalleExistente !== idPedido) {
-        alert('Advertencia: No puede agregar pedidos con diferentes ID de orden a la misma solicitud de cotización.');
-        this.mostrarCarga = false;
-        return;
-      }
-    }
+    // (Solo si quieres permitir múltiples productos con el mismo ID de orden)
+    // Si deseas permitir solo un producto por `id_orden_pedido_cabecera_fk`, descomenta esto
+    // if (this.solicitudCotizacionActual[0].detalles.length > 0) {
+    //   const idPedido = pedido.id_orden_pedido_cabecera_fk;
+    //   const idDetalleExistente = this.solicitudCotizacionActual[0].detalles[0].id_orden_pedido_cabecera_fk;
+    //   if (idDetalleExistente !== idPedido) {
+    //     alert('Advertencia: No puede agregar pedidos con diferentes ID de orden a la misma solicitud de cotización.');
+    //     this.mostrarCarga = false;
+    //     return;
+    //   }
+    // }
 
     // Agregar el pedido a la solicitud de cotización
     const detalle: DetalleCotizacion = {
       id_producto: pedido.id_producto,
       cantidad_solicitada: pedido.cantidad_solicitada,
       nombre_producto: pedido.producto.nombre_producto,
-      cantidad_comprada: pedido.cantidad_comprada || null,
-      cantidad_recepcionada: pedido.cantidad_recepcionada || null,
+      cantidad_comprada: pedido.cantidad_comprada || 0,
+      cantidad_recepcionada: pedido.cantidad_recepcionada || 0,
       estado_seguimiento_producto: 'PR',
       id_orden_pedido_cabecera_fk: pedido.id_orden_pedido_cabecera_fk,
-      orden_compra_detalle_fk: pedido.orden_compra_detalle_fk || null,
-      id_proveedores: pedido.id_proveedores || null,
+      orden_compra_detalle_fk: pedido.orden_compra_detalle_fk || 0,
+      id_proveedores: pedido.id_proveedores || 0,
       id_detalle_cotizacion: null,
-      id_cotizacion_fk: null
+      id_cotizacion_fk: null,
+      rut_empresa: pedido.rut_empresa,
+      id_orden_compra_cabecera_fk: 0,
+      id_orden_pedido_detalle: 0
     };
 
     this.solicitudCotizacionActual[0].detalles.push(detalle);
@@ -844,6 +910,21 @@ agregarPedidoASolicitud(pedido: any) {
   }
 }
 
+productoAgregadoEnSolicitud(pedido: any): boolean {
+  if (!this.solicitudCotizacionActual || this.solicitudCotizacionActual.length === 0) {
+    return false; // No hay solicitud de cotización actual
+  }
+
+  const idProducto = pedido.id_producto;
+
+  // Verificar si algún detalle tiene el mismo id_producto
+  return this.solicitudCotizacionActual[0]?.detalles.some((detalle: DetalleCotizacion) =>
+    detalle.id_producto === idProducto
+  );
+}
+
+
+
 pedidoAgregadoEnSolicitud(pedido: any): boolean {
   if (!this.solicitudCotizacionActual || this.solicitudCotizacionActual.length === 0) {
     return false; // No hay solicitud de cotización actual
@@ -855,8 +936,8 @@ pedidoAgregadoEnSolicitud(pedido: any): boolean {
   return this.solicitudCotizacionActual[0]?.detalles.some((detalle: DetalleCotizacion) =>
     detalle.id_orden_pedido_cabecera_fk === idPedido
   );
-  
 }
+
 
 
 
@@ -878,24 +959,73 @@ eliminarPedidoDeSolicitud(detalle: any) {
   }
 }
 
-pedidoAgregado(pedido: any): boolean {
-  this.mostrarCarga = true; // Mostrar indicador de carga
-  return this.solicitudCotizacionActual[0]?.detalles.some((detalle: any) => detalle.id_producto === pedido.id_producto);
-}
+
 
 guardarSolicitudDeCotizacion() {
+  // Verifica si solicitudCotizacionActual tiene datos antes de guardar
+  if (!this.solicitudCotizacionActual || this.solicitudCotizacionActual.length === 0) {
+    alert('No hay datos para guardar');
+    return;
+  }
+
+  // Mostrar indicador de carga
+  this.mostrarCarga = true;
+
   this.cotizacionService.guardarSolicitudCotizacion(this.solicitudCotizacionActual[0]).subscribe({
     next: (response) => {
+      // Navegar a las solicitudes o realizar cualquier otra acción necesaria
       this.navMisSolicitudes();
-      alert('Solicitud de cotización guardada con éxito');
-      this.mostrarCarga = false; // Ocultar indicador de carga
 
+      // Ocultar indicador de carga
+      this.mostrarCarga = false;
+
+      // Mostrar mensaje de éxito
+      alert('Solicitud de cotización guardada con éxito');
+
+      // Actualizar la vista o realizar cualquier otra acción después de guardar
+      this.actualizarPedidos(); // Actualizar tabla de pedidos
       console.log('Solicitud de cotización guardada con éxito:', response);
     },
     error: (error) => {
+      // Ocultar indicador de carga en caso de error
+      this.mostrarCarga = false;
+
+      // Mostrar mensaje de error
       console.error('Error al guardar la solicitud de cotización:', error);
-      console.log('Solicitud de Cotización Guardada:', this.solicitudCotizacionActual);
-    }})};
+      alert('Hubo un error al guardar la solicitud de cotización');
+    }
+  });
+}
+
+actualizarPedidos() {
+  // Verifica si solicitudCotizacionActual está definido y tiene detalles
+  const detallesActuales = this.solicitudCotizacionActual && this.solicitudCotizacionActual.length > 0
+    ? this.solicitudCotizacionActual[0].detalles
+    : [];
+
+  // Obtener pedidos actualizados del servicio
+  this.cotizacionService.obtenerPedidos().subscribe({
+    next: (pedidos) => {
+      // Actualiza la lista completa de pedidos
+      this.todosPedidos = pedidos;
+
+      // Filtra los pedidos que ya están en la solicitud de cotización actual
+      this.misPedidosFiltrados = this.todosPedidos.filter(pedido =>
+        !detallesActuales.some((detalle:DetalleCotizacion) =>
+          detalle.id_orden_pedido_cabecera_fk === pedido.id_cotizacion
+        )
+      );
+
+      console.log('Pedidos actualizados:', this.misPedidosFiltrados);
+    },
+    error: (error) => {
+      console.error('Error al obtener los pedidos:', error);
+      // Puedes manejar el error aquí si es necesario
+    }
+  });
+}
+
+
 
     estaPedidoEnSolicitud(pedido: any): boolean {
       return this.solicitudes.some(p => p.id_orden_pedido_cabecera_fk === pedido.id_orden_pedido_cabecera_fk); // Cambia la condición según tu lógica

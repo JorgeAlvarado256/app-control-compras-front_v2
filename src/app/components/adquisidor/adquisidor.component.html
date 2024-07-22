@@ -209,11 +209,20 @@
                         <td>{{ pedido.producto?.nombre_producto }}</td>
                         <td>{{ pedido.cantidad_solicitada }}</td>
                         <td>
-                          <button (click)="agregarPedidoASolicitud(pedido)">Agregar a Cotización</button>
+                          <button (click)="agregarPedidoASolicitud(pedido)" [disabled]="pedidoAgregado(pedido)">Agregar a Cotización</button>
                           <span *ngIf="pedidoAgregado(pedido)">Agregado</span>
                         </td>
                       </tr>
                     </ng-container>
+                    <ng-template #noPedidos>
+                      <tr>
+                        <td colspan="5">No hay pedidos disponibles</td>
+                      </tr>
+                    </ng-template>
+                    
+                    <!-- Indicador de carga -->
+                    <div *ngIf="mostrarCarga" class="loading-indicator">Cargando...</div>
+                    
                   </tbody>
                 </table>
           
@@ -224,32 +233,34 @@
           
               <!-- Resumen de Solicitud de Cotización -->
               <div class="solicitud-cotizacion-container"
-              *ngIf="solicitudCotizacionActual.length > 0 && solicitudCotizacionActual[0]?.detalles?.length > 0">
-              <h3>Resumen de Solicitud de Cotización</h3>
-              <div *ngFor="let detalle of solicitudCotizacionActual[0]?.detalles" class="detalle-solicitud-cotizacion">
-                <p>{{ detalle.producto?.nombre_producto }}</p>
-                <div class="detalle-nombre-producto">
-                  <p>Cantidad: {{ detalle.cantidad_solicitada }}</p>
-                  <p>Producto: {{ detalle.nombre_producto }}</p>
-                  <div class="solicitud-control">
-                    <button (click)="eliminarPedidoDeSolicitud(detalle)" class="btn-eliminar-detalle">Eliminar</button>
+                   *ngIf="solicitudCotizacionActual.length > 0 && solicitudCotizacionActual[0]?.detalles?.length > 0">
+                <h3>Resumen de Solicitud de Cotización</h3>
+                <div *ngFor="let detalle of solicitudCotizacionActual[0]?.detalles" class="detalle-solicitud-cotizacion">
+                  <p>{{ detalle.producto?.nombre_producto }}</p>
+                  <div class="detalle-nombre-producto">
+                    <p>Cantidad: {{ detalle.cantidad_solicitada }}</p>
+                    <p>Producto: {{ detalle.nombre_producto }}</p>
+                    <div class="solicitud-control">
+                      <button (click)="eliminarPedidoDeSolicitud(detalle)" class="btn-eliminar-detalle">Eliminar</button>
+                    </div>
                   </div>
                 </div>
+                <button [disabled]="solicitudCotizacionActual.length === 0 || solicitudCotizacionActual[0]?.detalles?.length === 0"
+                        (click)="guardarSolicitudDeCotizacion()">Generar Solicitud de Cotización</button>
               </div>
-              <button
-                [disabled]="solicitudCotizacionActual.length === 0 || solicitudCotizacionActual[0]?.detalles?.length === 0"
-                (click)="guardarSolicitudDeCotizacion()">Generar Solicitud de Cotización</button>
-            </div>           
-              
             </div>
           </div>
+          
           
           <div *ngIf="pestanaActiva === 'ordenesCompras'" class="orden-compra-item">
             <div *ngIf="ordenesDeCompra.length > 0">
               <div class="orden-compra" *ngFor="let ordenCompra of ordenesDeCompra; let i = index">
                 <div class="cabecera-orden-compra" (click)="ordenesDeCompra[i].expanded = !ordenesDeCompra[i].expanded">
                   <p class="tag blue">N° Orden de Compra: {{ ordenCompra.id_orden_compra_cabecera }}</p>
-                  <p class="tag yellow">Proveedor: {{ ordenCompra.rut_proveedor }}</p>
+                  <!-- Verificar la existencia del proveedor -->
+                  <div *ngIf="ordenCompra.proveedor">
+                    <p class="tag yellow">Proveedor: {{ ordenCompra.proveedor.razon_social }}</p>
+                  </div>
                   <p class="tag blue">Total Compra: {{ ordenCompra.total_compra }}</p>
                   <p class="tag yellow">Fecha: {{ ordenCompra.fecha_emision }}</p>
                   <p class="tag blue">Estado: <span [pTooltip]="tooltipContent">{{ obtenerToolTip(ordenCompra.estado_seguimiento) }}</span></p>
@@ -319,14 +330,6 @@
             </ng-template>
           </div>
           
-          
-          
-          <ng-template #noOrdenesCompras>
-            <p>No hay órdenes de compra disponibles.</p>
-          </ng-template>
-          
-          
-
           <div *ngIf="pestanaActiva === 'misSolicitudes'" class="orden-compra-item">
             <h3>Mis Solicitudes de cotización</h3>
           
@@ -415,6 +418,7 @@
                         <th>Producto</th>
                         <th>Cantidad Solicitada</th>
                         <th>Proveedor</th>
+                        <th>Correo del Proveedor</th> <!-- Nuevo campo -->
                         <th>Acciones</th>
                       </tr>
                     </thead>
@@ -423,6 +427,7 @@
                         <td>{{ detalle.producto?.nombre_producto }}</td>
                         <td>{{ detalle.cantidad_solicitada }}</td>
                         <td>{{ proveedoresSeleccionados.length > 0 ? proveedoresSeleccionados[0]?.razon_social : '' }}</td>
+                        <td>{{ proveedoresSeleccionados.length > 0 ? proveedoresSeleccionados[0]?.email_proveedor : '' }}</td> <!-- Nuevo campo -->
                         <td>
                           <a *ngIf="detalle.archivo_pdf" href="{{ detalle.archivo_pdf }}" target="_blank" class="btn btn-primary">Vista Previa</a>
                           <button class="btn btn-secondary" (click)="descargarCotizacion(detalle)">Descargar</button>
@@ -431,6 +436,7 @@
                     </tbody>
                   </table>
                 </div>
+                
               </div>
             </div>
           </div>

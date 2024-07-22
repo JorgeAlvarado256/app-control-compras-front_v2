@@ -12,7 +12,6 @@
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
- 
   <div class="wrapper">
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -56,7 +55,6 @@
                 <p>Crear Pedido</p>
               </a>
             </li>
-
             <li class="nav-item">
               <a class="nav-link" (click)="navMisPedidosSolicitantes()">
                 <i class="nav-icon fas fa-chart-pie"></i>
@@ -72,17 +70,19 @@
     <div class="content-wrapper">
       <div class="bienvenida">
         ¡Bienvenido al Sistema!
-    </div>
+      </div>
       <section class="content">
         <div class="container-fluid">
           <!-- Indicator Cards -->
-          <div class="row">
-            <app-indicator-card *ngIf="mostrarIndicatorCard" [misPedidos]="misPedidos"
-                [codRolUsuario]="codRolUsuario"
+          <div *ngIf="codRolUsuario === 3" class="row">
+            <app-indicator-card 
+              *ngIf="mostrarIndicatorCard" 
+              [misPedidos]="misPedidos"
+              [codRolUsuario]="codRolUsuario"
               (kpiSeleccionado)="filtrarPedidosPorKPI($event)">
             </app-indicator-card>
           </div>
-
+          <!-- Pedidos y detalles -->
           <div *ngIf="mostrarPedidos" class="row">
             <!-- Columna izquierda: Tabla de Pedidos -->
             <div class="col-lg-6">
@@ -112,9 +112,7 @@
                         </td>
                         <td>
                           <button class="btn btn-primary btn-sm" (click)="toggleDetallePedido(pedido)">
-                            {{ pedidoSeleccionado &&
-                            pedidoSeleccionado.id_orden_pedido_cabecera === pedido.id_orden_pedido_cabecera ? 'Ocultar
-                            Detalles' : 'Mostrar Detalles' }}
+                            {{ pedidoSeleccionado && pedidoSeleccionado.id_orden_pedido_cabecera === pedido.id_orden_pedido_cabecera ? 'Ocultar Detalles' : 'Mostrar Detalles' }}
                           </button>
                         </td>
                       </tr>
@@ -148,7 +146,7 @@
                               {{ detalle.cantidad_solicitada }}
                             </ng-container>
                             <ng-container *ngIf="editandoDetalle">
-                              <input *ngIf="editandoDetalle" type="number" class="form-control"
+                              <input type="number" class="form-control"
                                 [disabled]="detalleEnListaEliminar(detalle)" [(ngModel)]="detalle.cantidad_solicitada">
                             </ng-container>
                           </td>
@@ -191,110 +189,111 @@
             </div>
           </div>
 
-        </div>
-
-
-        <!-- Product Categories and Products -->
-        <div *ngIf="mostrarCategoriasProductos" class="row">
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Categorías</h3>
-              </div>
-              <div class="card-body">
-                <nav>
-                  <div *ngFor="let categoria of categoriasProductos">
-                    <a [ngClass]="{'categoria-activa': categoria.id_categoria_productos == categoriaActiva}"
-                      (click)="verProductos(categoria.id_categoria_productos)" class="link-button">
-                      <span class="codigo">{{ categoria.id_categoria_productos }}</span> - {{
-                      categoria.nombre_categoria }}
-                      <span *ngIf="hayProductosSeleccionados(categoria.id_categoria_productos)"
-                        class="check-mark">&#10004;</span>
-                    </a>
-                  </div>
-                </nav>
+          <!-- Product Categories and Products -->
+          <div *ngIf="mostrarCategoriasProductos" class="row">
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Categorías</h3>
+                </div>
+                <div class="card-body">
+                  <nav>
+                    <div *ngFor="let categoria of categoriasProductos">
+                      <a [ngClass]="{'categoria-activa': categoria.id_categoria_productos == categoriaActiva}"
+                        (click)="verProductos(categoria.id_categoria_productos)" class="link-button">
+                        <span class="codigo">{{ categoria.id_categoria_productos }}</span> - {{ categoria.nombre_categoria }}
+                        <span *ngIf="hayProductosSeleccionados(categoria.id_categoria_productos)"
+                          class="check-mark">&#10004;</span>
+                      </a>
+                    </div>
+                  </nav>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-md-8">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Productos</h3>
-              </div>
-              <div class="card-body">
-                <div *ngFor="let producto of productosPorCategoria" class="producto-item">
-                  <div class="producto-info">
-                    <span>{{ producto.nombre_producto }}</span>
-                  </div>
-                  <div class="producto-controls">
-                    <button (click)="agregarProducto(producto)" class="cantidad-button">+</button>
-                    <input type="number" [(ngModel)]="producto.cantidad" class="cantidad-input"
-                      [value]="producto.cantidad" (input)="actualizarSeleccion(producto)" min="0">
-                    <button (click)="quitarProducto(producto)" class="cantidad-button">-</button>
-                    <button (click)="eliminarCantidadSeleccionada(producto)" class="eliminar-button">Eliminar</button>
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Productos</h3>
+                </div>
+                <div class="card-body">
+                  <div *ngFor="let producto of productosPorCategoria" class="producto-item">
+                    <div class="producto-info">
+                      <span>{{ producto.nombre_producto }}</span>
+                    </div>
+                    <div class="producto-controls">
+                      <button (click)="agregarProducto(producto)" class="cantidad-button">+</button>
+                      <input type="number" [(ngModel)]="producto.cantidad" class="cantidad-input"
+                        [value]="producto.cantidad" (input)="actualizarSeleccion(producto)" min="0">
+                      <button (click)="quitarProducto(producto)" class="cantidad-button">-</button>
+                      <button (click)="eliminarCantidadSeleccionada(producto)" class="eliminar-button">Eliminar</button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Summary of Selected Products -->
-        <div *ngIf="mostrarResumen" class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Resumen Productos Seleccionados</h3>
-              </div>
-              <div class="card-body">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Producto</th>
-                      <th>Cantidad</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let producto of productosSeleccionados">
-                      <td>{{ producto.nombre_producto }}</td>
-                      <td>{{ producto.cantidad }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="resumen-btn">
-                  <button class="btn btn-success" (click)="confirmarPedido()">Confirmar
-                    Pedido</button>
-                  <button class="btn btn-secondary" (click)="volver()">Volver</button>
+          <!-- Summary of Selected Products -->
+          <div *ngIf="mostrarResumen" class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Resumen Productos Seleccionados</h3>
+                </div>
+                <div class="card-body">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let producto of productosSeleccionados">
+                        <td>{{ producto.nombre_producto }}</td>
+                        <td>{{ producto.cantidad }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="resumen-btn">
+                    <button class="btn btn-success" (click)="confirmarPedido()">Confirmar Pedido</button>
+                    <button class="btn btn-secondary" (click)="volver()">Volver</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Navigation Buttons -->
-        <div *ngIf="mostrarCategoriasProductos" class="row">
-          <div class="col-12 text-center">
-            <button *ngIf="productosSeleccionados && productosPorCategoria.length > 0"
-              [disabled]="productosPorCategoria.length === 0" (click)="generarPedido()" class="btn btn-primary">
-              Generar Pedido
-            </button>
+          <!-- Navigation Buttons -->
+          <div *ngIf="mostrarCategoriasProductos" class="row">
+            <div class="col-12 text-center">
+              <button *ngIf="productosSeleccionados && productosPorCategoria.length > 0"
+                [disabled]="productosPorCategoria.length === 0" (click)="generarPedido()" class="btn btn-primary">
+                Generar Pedido
+              </button>
+            </div>
           </div>
+
+          <!-- No Category Selected -->
+          <ng-template #noCategoriaSeleccionada>
+            <h1 class="no-categoria-seleccionada text-center">Seleccione una categoría</h1>
+          </ng-template>
+
+          <!-- No Requests -->
+          <ng-template #sinSolicitudes>
+            <h1 class="no-categoria-seleccionada text-center">No hay solicitudes creadas</h1>
+          </ng-template>
         </div>
-
-        <ng-template #noCategoriaSeleccionada>
-          <h1 class="no-categoria-seleccionada text-center">Seleccione una categoría</h1>
-        </ng-template>
-
-        <ng-template #sinSolicitudes>
-          <h1 class="no-categoria-seleccionada text-center">No hay solicitudes creadas</h1>
-        </ng-template>
       </section>
     </div>
   </div>
+
   <script src="https://adminlte.io/themes/v3/plugins/jquery/jquery.min.js"></script>
   <script src="https://adminlte.io/themes/v3/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="https://adminlte.io/themes/v3/dist/js/adminlte.min.js"></script>
+  <!-- Include your Angular scripts here -->
 </body>
+
 <app-pantalla-carga *ngIf="mostrarCarga"></app-pantalla-carga>
 
 </html>

@@ -1,0 +1,442 @@
+/* General Styles */
+.page-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ff7e5f, #feb47b);
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.content-wrapper {
+  background: linear-gradient(135deg, #46269c 0%, #3c58a1 40%, #ffd700 100%);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-message {
+  font-size: 24px;
+  font-weight: bold;
+  color: #000; /* Cambiado a negro */
+  margin-bottom: 20px;
+}
+
+.container-solicitante,
+.card,
+.bienvenida {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #343a40;
+  color: #fff;
+}
+
+.card-title {
+  font-size: 1.2rem;
+}
+
+.card-body,
+.card-body-mostrarPedido {
+  padding: 15px;
+}
+
+.card-body-mostrarPedido .table-pedido {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.card-body-mostrarPedido .table-pedido th,
+.card-body-mostrarPedido .table-pedido td {
+  padding: 8px;
+  vertical-align: top;
+  border: 1px solid #dee2e6;
+}
+
+.card-body-mostrarPedido .table-pedido thead th {
+  background-color: #f8f9fa;
+  color: #000; /* Cambiado a negro */
+}
+
+.card-body-mostrarPedido .table-pedido tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.card-body-mostrarPedido .table-pedido tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #3498db;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+.btn-warning {
+  background-color: #f39c12;
+}
+
+.btn-warning:hover {
+  background-color: #e67e22;
+}
+
+.btn-revisar {
+  background-color: #007bff;
+}
+
+.btn-aprobar {
+  background-color: #28a745;
+}
+
+.btn-rechazar {
+  background-color: #dc3545;
+}
+
+.btn-cancelar {
+  background-color: #6c757d;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+}
+
+.text-area {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  margin-top: 10px;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  visibility: hidden;
+  opacity: 0;
+  width: 140px;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -70px;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover::after {
+  visibility: visible;
+  opacity: 1;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #000; /* Cambiado a negro */
+  border-collapse: collapse;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #dee2e6;
+  padding: 0.75rem;
+  vertical-align: top;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+/* Estilo para el botón del menú desplegable */
+.custom-dropdown-toggle {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.custom-dropdown-toggle:hover {
+  background-color: #0056b3;
+}
+
+.custom-dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 160px;
+  padding: 10px 0;
+}
+
+.custom-dropdown-menu.show {
+  display: block;
+}
+
+.custom-dropdown-item {
+  color: #000; /* Cambiado a negro */
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s ease;
+}
+
+.custom-dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Estilo para la sección de KPIs */
+.indicator-card {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.indicator-card .header {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.indicator-card h2 {
+  font-size: 20px;
+  color: #000; /* Cambiado a negro */
+  margin: 0;
+}
+
+.kpi-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  padding: 15px;
+}
+
+.kpi h3 {
+  font-size: 18px;
+  color: #000; /* Cambiado a negro */
+  margin: 0 0 10px;
+}
+
+.kpi p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.navbar {
+  background-color: #c3c6ce;
+  color: #fff;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.navbar .nav-links {
+  display: flex;
+  gap: 15px;
+}
+
+.navbar .nav-links a {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.navbar .nav-links a:hover {
+  background-color: #ffffff;
+}
+
+.bienvenida {
+  background: #17a2b8;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.categoria-activa {
+  background-color: #f0f0f0;
+}
+
+.link-button {
+  display: block;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #edf2f7;
+  text-decoration: none;
+  color: #2d3748;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.link-button:hover {
+  background-color: #e2e8f0;
+  transform: scale(1.02);
+}
+
+.check-mark {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.no-categoria-seleccionada {
+  font-size: 1.2rem;
+  color: #dc3545;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.detalle-pedido-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.detalle-pedido {
+  font-size: 0.9rem;
+}
+
+.d-flex.justify-content-end button {
+  margin-left: 5px;
+}
+
+.table-pedido th,
+.table-pedido td {
+  text-align: center;
+}
+
+.table-pedido th {
+  background-color: #6b46c1;
+  color: #000; /* Cambiado a negro */
+}
+
+.table-pedido td {
+  background-color: #edf2f7;
+  color: #000; /* Cambiado a negro */
+}
+
+.table-pedido tr:nth-child(even) td {
+  background-color: #e2e8f0;
+}
+
+.table-pedido tr:hover td {
+  background-color: #cbd5e0;
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+}
+
+.card-body button,
+.card-body .btn {
+  margin-bottom: 10px;
+}
+
+.card-body .btn:hover {
+  background-color: #0056b3;
+}
+
+/* Estilo para el Sidebar */
+.sidebar {
+  background-color: #ffffff; /* Fondo blanco */
+  color: #000; /* Texto negro */
+  width: 250px; /* Ajusta el ancho según sea necesario */
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar .sidebar-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.sidebar .sidebar-item {
+  padding: 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  color: #000; /* Texto negro */
+  display: block;
+}
+
+.sidebar .sidebar-item:hover {
+  background-color: #f8f9fa;
+}
+
+.sidebar .sidebar-item.active {
+  background-color: #e2e8f0;
+  font-weight: bold;
+}
+
+/* Estilo para enlaces del sidebar */
+.sidebar a {
+  color: #000; /* Texto negro */
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  text-decoration: underline;
+}
+
+.sidebar .sidebar-footer {
+  position: absolute;
+  bottom: 20px;
+  width: calc(100% - 40px); /* Ajusta según el padding */
+  text-align: center;
+}
+.ocultar-en-crear-pedido {
+  display: none;
+}

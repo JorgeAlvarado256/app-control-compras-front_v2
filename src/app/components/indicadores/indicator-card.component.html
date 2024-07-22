@@ -1,38 +1,114 @@
 <div class="btn-group" role="group">
-  <button *ngIf="codRolUsuario === 4" class="btn btn-outline-primary"
+  <button *ngIf="codRolUsuario === 3" class="btn btn-outline-primary"
           [ngClass]="{'active': mostrarMisSolicitudes}"
-          (click)="toggleMostrarMisSolicitudes()">
+          (click)="mostrarMisSolicitudesClick()">
     Mis Solicitudes
   </button>
   <button *ngIf="codRolUsuario === 4" class="btn btn-outline-primary"
           [ngClass]="{'active': mostrarSolicitudesRecibidas}"
-          (click)="toggleMostrarSolicitudesRecibidas()">
+          (click)="mostrarSolicitudesRecibidasClick()">
     Solicitudes Recibidas
+  </button>
+  <button *ngIf="codRolUsuario === 5" class="btn btn-outline-primary"
+          [ngClass]="{'active': mostrarEncargados}"
+          (click)="mostrarEncargadosClick()">
+    Encargados
+  </button>
+  <button *ngIf="codRolUsuario === 6" class="btn btn-outline-primary"
+          [ngClass]="{'active': mostrarJefatura}"
+          (click)="mostrarJefaturaClick()">
+    Jefatura
   </button>
 </div>
 
-<div class="kpi-navbar">
-  <div *ngIf="mostrarMisSolicitudes" class="kpi-section">
+<div class="kpi-content">
+  <div *ngIf="codRolUsuario === 3 && mostrarMisSolicitudes" class="kpi-section">
     <div class="kpi-cards">
       <ng-container *ngFor="let estado of estadosSolicitantes">
-        <div class="kpi-card small" (click)="seleccionarKPI(estado.codigo)">
+        <div class="kpi-card" (click)="seleccionarKPI(estado.codigo)">
           <img [src]="estado.icono" [alt]="estado.titulo">
-          <div class="kpi-title">{{ estado.titulo }}</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
+          <div class="kpi-info">
+            <div class="kpi-title">{{ estado.titulo }}</div>
+            <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
+          </div>
         </div>
       </ng-container>
     </div>
   </div>
 
-  <div *ngIf="mostrarSolicitudesRecibidas" class="kpi-section">
+  <div *ngIf="codRolUsuario === 4 && mostrarMisSolicitudes" class="kpi-section">
     <div class="kpi-cards">
-      <ng-container *ngFor="let estado of estadosRecibidos">
-        <div class="kpi-card small" (click)="seleccionarKPI(estado.codigo)">
+      <ng-container *ngFor="let estado of estadosSolicitantes">
+        <div class="kpi-card" (click)="seleccionarKPI(estado.codigo)">
           <img [src]="estado.icono" [alt]="estado.titulo">
-          <div class="kpi-title">{{ estado.titulo }}</div>
-          <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
+          <div class="kpi-info">
+            <div class="kpi-title">{{ estado.titulo }}</div>
+            <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
+          </div>
         </div>
       </ng-container>
+    </div>
+  </div>
+
+  <div *ngIf="codRolUsuario === 4 && mostrarSolicitudesRecibidas" class="kpi-section">
+    <div class="kpi-cards">
+      <ng-container *ngFor="let estado of estadosSolicitantes">
+        <div class="kpi-card" (click)="seleccionarKPI(estado.codigo)">
+          <img [src]="estado.icono" [alt]="estado.titulo">
+          <div class="kpi-info">
+            <div class="kpi-title">{{ estado.titulo }}</div>
+            <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div *ngIf="codRolUsuario === 5 && mostrarEncargados" class="kpi-section">
+    <div class="kpi-cards">
+      <ng-container *ngFor="let estado of estadosEncargados">
+        <div class="kpi-card" (click)="seleccionarKPI(estado.codigo)">
+          <img [src]="estado.icono" [alt]="estado.titulo">
+          <div class="kpi-info">
+            <div class="kpi-title">{{ estado.titulo }}</div>
+            <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div *ngIf="codRolUsuario === 6 && mostrarJefatura" class="kpi-section">
+    <div class="kpi-cards">
+      <ng-container *ngFor="let estado of estadosJefatura">
+        <div class="kpi-card" (click)="seleccionarKPI(estado.codigo)">
+          <img [src]="estado.icono" [alt]="estado.titulo">
+          <div class="kpi-info">
+            <div class="kpi-title">{{ estado.titulo }}</div>
+            <div class="kpi-value">{{ contarPedidosPorEstado(estado.codigo) }}</div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div *ngIf="codRolUsuario === 5" class="kpi-section">
+    <div class="kpi-cards">
+      <div class="kpi-card" (click)="seleccionarKPI('COTIZACIONES')">
+        <img src="https://img.icons8.com/ios-glyphs/96/000000/in-transit.png" alt="Icono">
+        <div class="kpi-info">
+          <div class="kpi-title">Cotizaciones</div>
+          <div class="kpi-value">{{ misCotizaciones.length }}</div>
+        </div>
+      </div>
+
+      <div class="kpi-card" (click)="seleccionarKPI('ORDENES_COMPRA')">
+        <img src="https://img.icons8.com/ios-glyphs/96/000000/in-transit.png" alt="Icono">
+        <div class="kpi-info">
+          <div class="kpi-title">Órdenes de Compra</div>
+          <div class="kpi-value">{{ misOrdenesCompra.length }}</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
